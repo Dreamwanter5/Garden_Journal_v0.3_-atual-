@@ -1,0 +1,61 @@
+body {
+    background-color: #e3f2e5;
+    font-family: 'Arial', sans-serif;
+    color: #333;
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+
+.poligono-5{
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+}
+
+.poligono-6{
+    position: absolute;
+    z-index: -3;
+    top: -40px;
+    right: -20px;
+}
+
+.poligono-7{
+    position: absolute;
+    z-index: -3;
+    transform: rotate(280deg);
+    bottom: 400px;
+    left: -210px;
+}
+
+h2 {
+    color: #3e3e3e;
+}
+
+.card {
+    background-color: #F5FFF4;
+    border: none;
+    border-radius: 10px;
+    margin: 10px;
+}
+
+.card-img-top {
+    width: 100%;
+    height: auto;
+    border-top-left-radius: 10px ;
+    border-top-right-radius: 10px;
+}
+
+.card-title {
+    padding-top: 10%;
+    font-size: 1.3rem;
+    font-weight: bold;
+}
+
+.card-text {
+    color: #666;
+}
+
+img.img-fluid {
+    width: auto;
+    height: auto;
+}

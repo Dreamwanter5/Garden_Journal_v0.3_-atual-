@@ -1,0 +1,117 @@
+   
+        :root {
+            --primary-color: #2e7d32;
+            --secondary-color: #388e3c;
+            --light-green: #c8e6c9;
+        }
+        
+        body {
+            background-color: #f5f9f5;
+            font-family: 'Be Vietnam Pro', sans-serif;
+        }
+        
+        .user-card {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            background: white;
+            border-top: 5px solid var(--primary-color);
+        }
+        
+        .welcome-text {
+            font-size: 2.2rem;
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        .welcome-text:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 80px;
+            height: 4px;
+            background: var(--light-green);
+            border-radius: 2px;
+        }
+        
+        .user-info-card {
+            background: #f8fff8;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 1px solid #e0f2e0;
+        }
+        
+        .info-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #edf7ed;
+        }
+        
+        .info-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .info-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--light-green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            flex-shrink: 0;
+        }
+        
+        .info-icon i {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+        
+        .info-content h5 {
+            margin-bottom: 5px;
+            color: var(--secondary-color);
+            font-weight: 600;
+        }
+        
+        .action-card {
+            text-align: center;
+            padding: 25px;
+            border-radius: 12px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            height: 100%;
+            border: 1px solid #e0f2e0;
+            background: white;
+        }
+        
+        .action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+            border-color: var(--light-green);
+        }
+        
+        .action-icon {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+        
+        .plant-bg {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            opacity: 0.05;
+            z-index: 0;
+            width: 300px;
+        }

@@ -1,0 +1,20 @@
+{
+  "dependencies": {
+    "@milkdown/crepe": "^7.17.1",
+    "@milkdown/kit": "^7.17.1"
+  },
+  "name": "garden_journal_v0.3_(atual)",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "vite": "^7.1.10"
+  }
+}

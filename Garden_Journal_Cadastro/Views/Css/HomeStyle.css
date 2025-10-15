@@ -1,0 +1,211 @@
+body{
+    background: url(../img/Background\ página\ home\ tcc\ v2.jpg
+    ) no-repeat center center fixed;
+    font-family: Arial, sans-serif;
+}
+.pagina-1 {
+    padding-bottom: 80px;
+}
+
+#botao-final {
+    margin-bottom: 10% !important; 
+}
+
+#corponavbar{
+    background-color: rgba(250, 250, 250, 0.90) !important;
+    backdrop-filter: blur(10px) !important;
+}
+
+section{
+    padding-top: 20%;
+}
+
+button{
+    margin: 0.2em;
+    margin-left: 15px !important;
+}
+
+#logoGJ{
+    margin-right: 15px;
+}
+
+.btn-start{
+    
+    margin: auto !important;
+    background-color: #65A603;
+    border-radius: 12px;
+    transition-duration: 0.4s;
+    color: white;
+    border: 2px solid #65A603 ;
+    text-align: center;
+    /* display: inline-block; */
+    padding: 15px 32px;
+    font-size: 2rem;
+}
+
+.btn-start:hover{
+    background-color: white;
+    color: black;
+    border: 2px solid #65A603;
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+    font-size: 2rem;
+    padding: 15px 32px;
+}
+
+
+#headerBody{
+    position: sticky;
+    top: 0;
+    padding: 10px 16px;
+    background: #555;
+    color: #f1f1f1;
+}
+
+#headerBody
+.main-title {
+    color: #444;
+    margin: 0 0 65px 0;
+    font-size: 40px;
+    text-align: center;
+  }
+
+#HeaderBtn{
+    position: sticky;
+    padding: 12px 25px!important;
+    background-color: #65A603;
+    transition-duration: 0.4s;
+    border-radius: 12px;
+    color: white;
+    text-decoration: none;
+}
+#HeaderBtn:hover{
+    background-color: #4d7e02 !important;
+}
+
+.main-heading {
+    font-size: 2em;
+}
+
+h1 {
+    font-size: 10vw;
+    margin: 0.2em;
+    margin-left: 15px
+}
+
+@media(max-width:911px){
+    .sidebar{
+        background-color: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+    }
+}
+
+
+/* Centralize the main section */
+main {
+    padding-top: 10px; /* Adjust this value to match the height of your header */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Center vertically */
+    align-items: center; /* Center horizontally */
+    text-align: center; /* Center text alignment */
+}
+
+#sobre {
+    font-size: 1.5rem;
+    background-color: rgba(156, 156, 156, 0.23);
+    backdrop-filter: blur(10px);
+    padding: 20px;
+    border-radius: 10px;
+    margin: 20px !important;
+    max-width: 800px; /* Optional: Set a maximum width for larger screens */
+
+}
+
+/* Optional: Add styles for the header to ensure it remains fixed and styled properly */
+header .navbar {
+    z-index: 1030; /* Ensure the header stays above other content */
+}
+
+/* Remove underline from all <a> tags */
+a {
+    text-decoration: none;
+}
+
+/* Optional: Add hover effect for links */
+a:hover {
+    text-decoration: underline; /* Add underline on hover if desired */
+}
+
+#filter-image {
+    width: 640px !important;
+    height: 420px !important;
+    object-fit:contain;
+    border: 3px solid #ccc;
+    border-radius: 10px;
+    max-width: none !important;
+    display: block;
+}
+
+/* Custom style for pagina 3 filter buttons */
+.filter-btn {
+    background-color: #65A603;
+    color: #fff ;
+    border: 2px solid #65A603 ;
+    border-radius: 50px ;      
+    font-size: 1.2rem;          
+    /* font-weight: 600; */
+    padding: 28px 0; 
+    margin-bottom: 18px;
+    transition: 
+        background 0.3s,
+        color 0.3s,
+        border-color 0.3s,
+        box-shadow 0.3s;
+    width: 100%;
+    box-shadow: 0 2px 8px 0 rgba(101,166,3,0.08);
+}
+
+.filter-btn:hover, .filter-btn.active {
+    background-color: #fff !important;
+    color: #65A603 !important;
+    border: 2px solid #65A603 !important;
+    box-shadow: 0 4px 16px 0 rgba(101,166,3,0.15);
+}
+
+#filter-desc {
+    background: rgba(0, 0, 0, 0.65); /* Preto mais opaco */
+    color: #fff;
+    border-radius: 16px;
+    padding: 20px 28px;
+    margin-top: 16px;
+    font-size: 1.18rem;
+    box-shadow: 0 4px 24px 0 rgba(0,0,0,0.18);
+    backdrop-filter: blur(6px); /* Blur mais visível */
+    max-width: 480px;
+    text-align: center;
+    display: inline-block; /* Garante que o fundo só ocupe o texto */
+}
+
+/* Deixe a seção da página 4 mais destacada e ocupando boa parte da tela */
+.container.my-5 {
+    min-height: 45vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+}
+
+.container.my-5 h2,
+.container.my-5 p {
+    font-size: 2.2rem;
+    margin-bottom: 1.5rem;
+}
+
+.btn-start {
+    font-size: 2.2rem;
+    padding: 22px 48px;
+    margin-top: 2rem !important;
+}
+

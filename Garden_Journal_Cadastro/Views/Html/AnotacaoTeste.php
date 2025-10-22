@@ -18,7 +18,7 @@ if (!isset($_SESSION["id"])) {
 
     <link rel="stylesheet" href="../Css/AnotacaoTeste.css"></link>
     <script src="../js/nota.js" defer></script>
-    
+    <script src="salvarNota.js" defer></script>
   </head>
   <body>
     <?php include_once("partialsmenu.php"); ?>
@@ -43,53 +43,53 @@ if (!isset($_SESSION["id"])) {
             id="editor"
             placeholder="# Comece a escrever seu Markdown aqui..."
           >
-# Bem-vindo ao Editor Markdown!
+            # Bem-vindo ao Editor Markdown!
 
-Este é um exemplo de **editor Markdown** com visualização em tempo real.
+            Este é um exemplo de **editor Markdown** com visualização em tempo real.
 
-## Funcionalidades
+            ## Funcionalidades
 
-- ✨ **Visualização em tempo real**
-- 🎨 **Design moderno e responsivo**
-- 📱 **Compatível com dispositivos móveis**
-- 🚀 **Rápido e leve**
+            - ✨ **Visualização em tempo real**
+            - 🎨 **Design moderno e responsivo**
+            - 📱 **Compatível com dispositivos móveis**
+            - 🚀 **Rápido e leve**
 
-## Exemplos de Sintaxe
+            ## Exemplos de Sintaxe
 
-### Texto Formatado
+            ### Texto Formatado
 
-**Negrito**, *itálico*, ~~tachado~~, e `código inline`.
+            **Negrito**, *itálico*, ~~tachado~~, e `código inline`.
 
-### Listas
+            ### Listas
 
-1. Item ordenado 1
-2. Item ordenado 2
-3. Item ordenado 3
+            1. Item ordenado 1
+            2. Item ordenado 2
+            3. Item ordenado 3
 
-- Item não ordenado
-- Outro item
-  - Subitem
+            - Item não ordenado
+            - Outro item
+              - Subitem
 
-### Código
+            ### Código
 
-\`\`\`javascript
-function exemplo() {
-    console.log("Olá, Mundo!");
-    return true;
-}
-\`\`\`
+            \`\`\`javascript
+            function exemplo() {
+                console.log("Olá, Mundo!");
+                return true;
+            }
+            \`\`\`
 
-### Citações
+            ### Citações
 
-> Esta é uma citação elegante que destaca informações importantes.
+            > Esta é uma citação elegante que destaca informações importantes.
 
-### Links e Imagens
+            ### Links e Imagens
 
-Visite o [Markdown Guide](https://www.markdownguide.org) para aprender mais.
+            Visite o [Markdown Guide](https://www.markdownguide.org) para aprender mais.
 
----
+            ---
 
-*Divirta-se escrevendo!*</textarea
+            *Divirta-se escrevendo!*</textarea
           >
         </div>
       </div>

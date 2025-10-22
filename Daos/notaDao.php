@@ -1,74 +1,55 @@
 <?php
-require_once('BaseDAO.php');
+require_once('baseDAO.php');
+require_once('categoriaDAO.php');
 
 class NotaDAO extends BaseDAO
 {
-    public function salvar($titulo, $conteudo, $idUsuario, $categorias)
+    public function salvarNota($titulo, $conteudoMarkdown, $conteudoHTML, $idUsuario, $categorias = [])
 {
     try {
-        // Inicia transação
         $this->connection->beginTransaction();
 
-        // 1. Salva/atualiza a nota
-        $sql = "INSERT INTO nota (nome, texto, dt) 
-                VALUES (:titulo, :conteudo, CURDATE())
-                ON DUPLICATE KEY UPDATE texto = :conteudo, dt = CURDATE()";
+        // 1. Salva a nota principal
+        $sql = "INSERT INTO nota (titulo, conteudo_markdown, conteudo_html, id_usuario) 
+                VALUES (:titulo, :conteudo_markdown, :conteudo_html, :id_usuario)";
         
         $stmt = $this->executaComParametros($sql, [
             ':titulo' => $titulo,
-            ':conteudo' => $conteudo
+            ':conteudo_markdown' => $conteudoMarkdown,
+            ':conteudo_html' => $conteudoHTML,
+            ':id_usuario' => $idUsuario
         ]);
         
-        $idNota = $this->getLastInsertId(); // Usando o novo método
+        $idNota = $this->getLastInsertId();
         
-        // 2. Remove vinculações anteriores
-        $sqlDelete = "DELETE FROM nota_categoria WHERE id_nota = :id_nota";
-        $this->executaComParametros($sqlDelete, [':id_nota' => $idNota]);
-        
-        // 3. Processa categorias
-        $categoriaDAO = new CategoriaDAO();
-        
-        foreach ($categorias as $categoriaNome) {
-            // Verifica se categoria existe
-            if (!$categoriaDAO->existe($categoriaNome, $idUsuario)) {
-                $categoriaDAO->inserir($categoriaNome, $idUsuario);
+        // 2. Processa as categorias (se houver)
+        if (!empty($categorias)) {
+            $categoriaDAO = new CategoriaDAO();
+            
+            foreach ($categorias as $categoriaNome) {
+                $categoriaNome = trim($categoriaNome);
+                if (empty($categoriaNome)) continue;
+                
+                if (!$categoriaDAO->existe($categoriaNome, $idUsuario)) {
+                    $categoriaDAO->inserir($categoriaNome, $idUsuario);
+                }
+                
+                $idCategoria = $categoriaDAO->buscarIdPorNome($categoriaNome, $idUsuario);
+                
+                $sqlVinculo = "INSERT IGNORE INTO nota_categoria (id_nota, id_categoria) 
+                               VALUES (:id_nota, :id_categoria)";
+                $this->executaComParametros($sqlVinculo, [
+                    ':id_nota' => $idNota,
+                    ':id_categoria' => $idCategoria
+                ]);
             }
-            
-            // Obtém ID da categoria
-            $idCategoria = $categoriaDAO->buscarIdPorNome($categoriaNome, $idUsuario);
-            
-            // Vincula nota à categoria
-            $sqlVinculo = "INSERT INTO nota_categoria (id_nota, id_categoria)
-                           VALUES (:id_nota, :id_categoria)";
-            $this->executaComParametros($sqlVinculo, [
-                ':id_nota' => $idNota,
-                ':id_categoria' => $idCategoria
-            ]);
         }
         
-        // Commit da transação
         $this->connection->commit();
         return $idNota;
         
     } catch (Exception $e) {
-        // Rollback em caso de erro
         $this->connection->rollBack();
         throw $e;
     }
-}
-
-    public function buscarPorUsuario($idUsuario)
-    {
-        $sql = "SELECT n.nome AS titulo, n.texto, n.dt, 
-                GROUP_CONCAT(c.nome) AS categorias
-                FROM nota n
-                JOIN nota_categoria nc ON n.nome = nc.id_nota
-                JOIN categoria c ON nc.id_categoria = c.id_categoria
-                WHERE c.id_usuario = :id_usuario
-                GROUP BY n.nome";
-        
-        $stmt = $this->executaComParametros($sql, [':id_usuario' => $idUsuario]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-    
 }

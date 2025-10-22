@@ -4,7 +4,8 @@ session_start();
 require_once(__DIR__ . 'baseDao.php');
 require_once(__DIR__ . 'notaDao.php');
 require_once(__DIR__ . 'categoriaDao.php');
-require_once(__DIR__ . '../Entidades/Usuario.php');
+
+header('Content-Type: application/json');
 
 if (!isset($_SESSION["id"])) {
     http_response_code(401);
@@ -12,24 +13,40 @@ if (!isset($_SESSION["id"])) {
     exit();
 }
 
-$dados = json_decode(file_get_contents('php://input'), true);
+$input = file_get_contents('php://input');
+$dados = json_decode($input, true);
+
+if (!$dados) {
+    http_response_code(400);
+    echo json_encode(['status' => 'error', 'message' => 'Dados inválidos']);
+    exit();
+}
 
 // Validação mínima
 if (empty($dados['titulo'])) {
-    $dados['titulo'] = 'Anotação sem título ' . date('d/m/Y H:i');
+    $dados['titulo'] = 'Nota sem título - ' . date('d/m/Y H:i');
 }
 
 try {
     $notaDAO = new NotaDAO();
-    $notaDAO->salvar(
+    
+    // Agora recebemos o HTML já convertido do JavaScript
+    $idNota = $notaDAO->salvarNota(
         $dados['titulo'],
-        $dados['conteudo'] ?? '',
+        $dados['conteudo_markdown'] ?? '',  // Markdown original
+        $dados['conteudo_html'] ?? '',      // HTML já convertido
         $_SESSION['id'],
         $dados['categorias'] ?? []
     );
 
-    echo json_encode(['status' => 'success', 'message' => 'Nota salva com sucesso!']);
+    echo json_encode([
+        'status' => 'success', 
+        'message' => 'Nota salva com sucesso!',
+        'id_nota' => $idNota
+    ]);
+    
 } catch (Exception $e) {
+    error_log("Erro ao salvar nota: " . $e->getMessage());
     http_response_code(500);
-    echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+    echo json_encode(['status' => 'error', 'message' => 'Erro interno do servidor']);
 }

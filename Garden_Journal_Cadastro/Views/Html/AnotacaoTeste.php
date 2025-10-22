@@ -31,7 +31,7 @@ if (!isset($_SESSION["id"])) {
       <!-- Aqui eu quero que seja o nome da anotação que o usuário quiser inserir -->
       <div class="mb-4">
         <input type="text" id="titulo-nota" class="form-control form-control-lg border-0 fs-1 fw-bold"
-          value="Nova Anotação" placeholder="Digite o título da sua anotação..."
+          value="" placeholder="Digite o título da sua anotação..."
           style="background: transparent; outline: none;">
       </div>
       <div class="mb-4">
@@ -67,16 +67,6 @@ if (!isset($_SESSION["id"])) {
       </div>
     </div>
 
-    <div class="mt-3">
-    <div class="input-group">
-      <input type="text" id="nova-categoria" class="form-control" placeholder="Adicionar nova categoria...">
-      <button class="btn btn-outline-secondary" type="button" id="btn-add-categoria">+</button>
-    </div>
-    </div>
-      <p class="description">
-        Um editor Markdown simples e elegante com visualização em tempo real.
-        Escreva no editor e veja o resultado formatado instantaneamente.
-      </p>
     </header>
 
     <div class="editor-wrapper">
@@ -85,9 +75,7 @@ if (!isset($_SESSION["id"])) {
         <span>Digite seu Markdown aqui</span>
       </div>
       <div class="editor-content">
-        <textarea id="editor" placeholder="# Comece a escrever seu Markdown aqui...">
-            
-        </textarea>
+        <textarea id="editor" placeholder="# Comece a escrever seu Markdown aqui..."></textarea>
       </div>
     </div>
 

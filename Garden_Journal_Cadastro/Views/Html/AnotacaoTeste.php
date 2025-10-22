@@ -16,58 +16,47 @@ if (!isset($_SESSION["id"])) {
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Bootstrap Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-
+  <script src="https://unpkg.com/petite-vue" defer></script>
   <link rel="stylesheet" href="../Css/AnotacaoTeste.css">
   </link>
-  <script src="../js/nota.js" defer></script>
+  <!-- <script src="../js/nota.js" defer></script> -->
   <script src="../js/salvarNota.js" defer></script>
 </head>
 
 <body>
+
   <?php include_once("partialsmenu.php"); ?>
 
-  <div class="container">
+    <div class="container" v-scope="App()" @vue:mounted="mounted">
     <header>
-      <!-- Aqui eu quero que seja o nome da anotação que o usuário quiser inserir -->
       <div class="mb-4">
-        <input type="text" id="titulo-nota" class="form-control form-control-lg border-0 fs-1 fw-bold"
-          value="" placeholder="Digite o título da sua anotação..."
-          style="background: transparent; outline: none;">
+        <input type="text" 
+               v-model="formData.titulo" 
+               class="form-control form-control-lg border-0 fs-1 fw-bold"
+               placeholder="Digite o título da sua anotação..."
+               style="background: transparent; outline: none;">
       </div>
-      <div class="mb-4">
+      
+    </header>
 
+    <!-- Seção de Categorias -->
+    <div class="mb-4">
       <label class="form-label fw-bold">Categorias</label>
       <div class="categorias-wrapper">
         <div class="categorias-list">
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="Trabalho" id="cat-trabalho">
-            <label class="form-check-label" for="cat-trabalho">Trabalho</label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="Estudos" id="cat-estudos">
-            <label class="form-check-label" for="cat-estudos">Estudos</label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="Pessoal" id="cat-pessoal">
-            <label class="form-check-label" for="cat-pessoal">Pessoal</label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="Ideias" id="cat-ideias">
-            <label class="form-check-label" for="cat-ideias">Ideias</label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="Projetos" id="cat-projetos">
-            <label class="form-check-label" for="cat-projetos">Projetos</label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="Lembretes" id="cat-lembretes">
-            <label class="form-check-label" for="cat-lembretes">Lembretes</label>
+          <div v-for="categoria in categoriasDisponiveis" :key="categoria.id" class="form-check">
+            <input class="form-check-input" 
+                   type="checkbox" 
+                   :value="categoria.id" 
+                   :id="'cat-' + categoria.id" 
+                   v-model="formData.categoriasSelecionadas">
+            <label class="form-check-label" :for="'cat-' + categoria.id">
+              {{ categoria.nome }}
+            </label>
           </div>
         </div>
       </div>
     </div>
-
-    </header>
 
     <div class="editor-wrapper">
       <div class="editor-header">
@@ -75,7 +64,10 @@ if (!isset($_SESSION["id"])) {
         <span>Digite seu Markdown aqui</span>
       </div>
       <div class="editor-content">
-        <textarea id="editor" placeholder="# Comece a escrever seu Markdown aqui..."></textarea>
+        <textarea id="editor" 
+                  placeholder="# Comece a escrever seu Markdown aqui..." 
+                  v-model="formData.conteudo"
+                  @input="atualizarPreview"></textarea>
       </div>
     </div>
 
@@ -84,15 +76,19 @@ if (!isset($_SESSION["id"])) {
         <h2>Visualização</h2>
         <span>Resultado</span>
       </div>
-      <div id="preview">
-        <!-- A visualização será gerada aqui pelo JavaScript -->
-      </div>
+      <div id="preview" v-html="preview"></div>
     </div>
 
     <div class="actions">
-      <button id="clear-btn">🧹 Limpar Editor</button>
-      <button id="sample-btn" class="secondary">📋 Texto de Exemplo</button>
-      <button id="download-btn">💾 Download HTML</button>
+      <button @click="limparEditor" type="button">🧹 Limpar Editor</button>
+      <button @click="carregarExemplo" type="button" class="secondary">📋 Texto de Exemplo</button>
+      <button @click="salvarNota" type="button">💾 Salvar Nota</button>
+      <button @click="downloadHTML" type="button">📥 Download HTML</button>
+    </div>
+
+    <!-- Mensagens de feedback -->
+    <div v-if="mensagem" class="alert" :class="{'alert-success': sucesso, 'alert-danger': !sucesso}">
+      {{ mensagem }}
     </div>
 
     <div class="tips">
@@ -119,14 +115,12 @@ if (!isset($_SESSION["id"])) {
           <p>
             <code>- Item não ordenado</code><br />
             <code>1. Item ordenado</code><br />
-            <code>- [ ] Tarefa</code>
           </p>
         </div>
         <div class="tip-card">
           <h4>Código</h4>
           <p>
             <code>`código inline`</code><br />
-            <code>```bloco de código```</code>
           </p>
         </div>
         <div class="tip-card">
@@ -141,7 +135,6 @@ if (!isset($_SESSION["id"])) {
           <p>
             <code>> Citação</code><br />
             <code>--- Linha horizontal</code><br />
-            <code>| Tabela |</code>
           </p>
         </div>
       </div>

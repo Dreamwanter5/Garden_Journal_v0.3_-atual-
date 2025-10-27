@@ -1,10 +1,10 @@
 <?php
 session_start();
 
-require_once(__DIR__ . 'baseDao.php');
-require_once(__DIR__ . 'notaDao.php');
-require_once(__DIR__ . 'categoriaDao.php');
-require_once(__DIR__ . '../Entidades/Usuario.php');
+require_once(__DIR__ . '/baseDao.php');
+require_once(__DIR__ . '/notaDao.php');
+require_once(__DIR__ . '/categoriaDao.php');
+require_once(__DIR__ . '/../Entidades/Usuario.php');
 
 if (!isset($_SESSION["id"])) {
     http_response_code(401);

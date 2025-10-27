@@ -1,64 +1,73 @@
+-- Create and use database
+CREATE DATABASE IF NOT EXISTS gardenjournal;
+USE gardenjournal;
 
-create database gardenjournal;
-Use gardenjournal;
-
-Create table Configuracoes(
-    idConfiguracoes int not null auto_increment primary key,
-    descricao varchar(50000) not null
+-- Create base tables
+CREATE TABLE Configuracoes (
+    idConfiguracoes INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    descricao VARCHAR(50000) NOT NULL
 );
 
-create table Usuario (
-    id_usuario int not null auto_increment primary key,
-    nome varchar (250) not null,
-    senha varchar (250) not null,
-    email varchar (250) not null,
-    configuracoes int not null,
-    constraint fk_usuario_configuracoes foreign key (configuracoes) references Configuracoes(idConfiguracoes)
+CREATE TABLE Usuario (
+    id_usuario INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(250) NOT NULL,
+    senha VARCHAR(250) NOT NULL,
+    email VARCHAR(250) NOT NULL,
+    configuracoes INT NOT NULL DEFAULT 1,
+    CONSTRAINT fk_usuario_configuracoes 
+        FOREIGN KEY (configuracoes) 
+        REFERENCES Configuracoes(idConfiguracoes)
 );
 
-
-Create table categoria (
-    id_categoria int not null auto_increment primary key,
-    nome varchar (250) not null, 
-    data_criacao date not null,
-    emoji varchar (45),
-    imagem varchar (45),
-    id_usuario int not null,
-    constraint fk_categoria_usuario foreign key (id_usuario) references Usuario(id_usuario)  
+CREATE TABLE categoria (
+    id_categoria INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(250) NOT NULL, 
+    data_criacao DATE NOT NULL,
+    emoji VARCHAR(45),
+    imagem VARCHAR(45),
+    id_usuario INT NOT NULL,
+    CONSTRAINT fk_categoria_usuario 
+        FOREIGN KEY (id_usuario) 
+        REFERENCES Usuario(id_usuario)  
 );
 
-create table nota (
-    nome Varchar(45) not null primary key,
-    texto varchar (5000),
-    dt date,
-    id_categoria int not null,
-    constraint fk_nota_categoria foreign key (id_categoria) references Categoria(id_categoria)  
+CREATE TABLE nota (
+    nome VARCHAR(45) NOT NULL PRIMARY KEY,
+    texto VARCHAR(5000),
+    dt DATE,
+    id_usuario INT NOT NULL,
+    CONSTRAINT fk_nota_usuario 
+        FOREIGN KEY (id_usuario) 
+        REFERENCES usuario(id_usuario)
 );
 
-create table tags (
-    idTags int not null auto_increment primary key,  
-    Descricao varchar (250)
+CREATE TABLE tags (
+    idTags INT NOT NULL AUTO_INCREMENT PRIMARY KEY,  
+    Descricao VARCHAR(250)
 );
-select * from usuario;
 
 CREATE TABLE nota_historico (
-     id INT AUTO_INCREMENT PRIMARY KEY,
-     id_nota VARCHAR(45),
-     conteudo TEXT,
-     data_alteracao DATETIME
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_nota VARCHAR(45),
+    conteudo TEXT,
+    data_alteracao DATETIME
 );
 
 CREATE TABLE nota_categoria (
     id_nota VARCHAR(45) NOT NULL,
     id_categoria INT NOT NULL,
     PRIMARY KEY (id_nota, id_categoria),
-    CONSTRAINT fk_nota_categoria_nota FOREIGN KEY (id_nota) REFERENCES nota(nome) ON DELETE CASCADE,
-    CONSTRAINT fk_nota_categoria_categoria FOREIGN KEY (id_categoria) REFERENCES categoria(id_categoria) ON DELETE CASCADE
+    CONSTRAINT fk_nota_categoria_nota 
+        FOREIGN KEY (id_nota) 
+        REFERENCES nota(nome) 
+        ON DELETE CASCADE,
+    CONSTRAINT fk_nota_categoria_categoria 
+        FOREIGN KEY (id_categoria) 
+        REFERENCES categoria(id_categoria) 
+        ON DELETE CASCADE
 );
-select * from usuario;
 
-INSERT INTO Configuracoes (descricao) VALUES ('Configuração padrão');
-
--- definir valor default para a coluna usuario.configuracoes
-ALTER TABLE Usuario
-    MODIFY configuracoes INT NOT NULL DEFAULT 1;
+-- Insert default configuration
+INSERT INTO Configuracoes (descricao) 
+VALUES ('Configuração padrão')
+ON DUPLICATE KEY UPDATE descricao = VALUES(descricao);

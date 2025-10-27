@@ -1,5 +1,5 @@
 <?php
-require_once('BaseDAO.php');
+require_once(__DIR__ . '/baseDao.php');
 
 class CategoriaDAO extends BaseDAO
 {
@@ -7,12 +7,12 @@ class CategoriaDAO extends BaseDAO
     {
         $sql = "SELECT COUNT(*) FROM categoria 
                 WHERE nome = :nome AND id_usuario = :id_usuario";
-        
+
         $stmt = $this->executaComParametros($sql, [
             ':nome' => $nome,
             ':id_usuario' => $idUsuario
         ]);
-        
+
         return $stmt->fetchColumn() > 0;
     }
 
@@ -20,7 +20,7 @@ class CategoriaDAO extends BaseDAO
     {
         $sql = "INSERT INTO categoria (nome, data_criacao, id_usuario) 
                 VALUES (:nome, CURDATE(), :id_usuario)";
-        
+
         return $this->executaComParametros($sql, [
             ':nome' => $nome,
             ':id_usuario' => $idUsuario
@@ -32,7 +32,7 @@ class CategoriaDAO extends BaseDAO
         $sql = "SELECT id_categoria, nome, data_criacao, emoji, imagem 
                 FROM categoria 
                 WHERE id_usuario = :id_usuario";
-        
+
         $stmt = $this->executaComParametros($sql, [':id_usuario' => $idUsuario]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -41,22 +41,22 @@ class CategoriaDAO extends BaseDAO
     {
         $sql = "INSERT INTO nota_categoria (id_nota, id_categoria) 
                 VALUES (:id_nota, :id_categoria)";
-        
+
         return $this->executaComParametros($sql, [
             ':id_nota' => $idNota,
             ':id_categoria' => $idCategoria
         ]);
     }
     public function buscarIdPorNome($nome, $idUsuario)
-{
-    $sql = "SELECT id_categoria FROM categoria 
+    {
+        $sql = "SELECT id_categoria FROM categoria 
             WHERE nome = :nome AND id_usuario = :id_usuario";
-    
-    $stmt = $this->executaComParametros($sql, [
-        ':nome' => $nome,
-        ':id_usuario' => $idUsuario
-    ]);
-    
-    return $stmt->fetchColumn();
-}
+
+        $stmt = $this->executaComParametros($sql, [
+            ':nome' => $nome,
+            ':id_usuario' => $idUsuario
+        ]);
+
+        return $stmt->fetchColumn();
+    }
 }

@@ -291,6 +291,31 @@ footer a:hover {
   color: var(--secondary-color);
 }
 
+.categorias-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px; /* ajuste menor que 5% se quiser colar mais */
+  align-items: center;
+}
+
+.categorias-list .form-check {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 1%;
+  padding-top: 9px;
+  background: transparent;
+  border-radius: 6px;
+}
+
+.categorias-list .form-check-label {
+  margin: 0;
+}
+
+.categorias-list .form-check-input {
+  margin-top: 0;
+}
+
 @media (max-width: 768px) {
   .container {
     padding: 10px;
@@ -319,4 +344,8 @@ footer a:hover {
     width: 100%;
     max-width: 300px;
   }
+}
+
+a {
+  list-style: none;
 }

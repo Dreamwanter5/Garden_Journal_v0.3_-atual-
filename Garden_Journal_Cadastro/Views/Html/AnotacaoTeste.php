@@ -24,6 +24,7 @@ if (!isset($_SESSION["id"])) {
     <?php include_once("partialsmenu.php"); ?>
 
     <div class="container">
+      <!-- Inicio da área de alteração pelo usuário -->
       <header>
         <!-- Aqui eu quero que seja o nome da anotação que o usuário quiser inserir -->
         <h1>Editor Markdown Interativo</h1>
@@ -43,53 +44,8 @@ if (!isset($_SESSION["id"])) {
             id="editor"
             placeholder="# Comece a escrever seu Markdown aqui..."
           >
-            # Bem-vindo ao Editor Markdown!
-
-            Este é um exemplo de **editor Markdown** com visualização em tempo real.
-
-            ## Funcionalidades
-
-            - ✨ **Visualização em tempo real**
-            - 🎨 **Design moderno e responsivo**
-            - 📱 **Compatível com dispositivos móveis**
-            - 🚀 **Rápido e leve**
-
-            ## Exemplos de Sintaxe
-
-            ### Texto Formatado
-
-            **Negrito**, *itálico*, ~~tachado~~, e `código inline`.
-
-            ### Listas
-
-            1. Item ordenado 1
-            2. Item ordenado 2
-            3. Item ordenado 3
-
-            - Item não ordenado
-            - Outro item
-              - Subitem
-
-            ### Código
-
-            \`\`\`javascript
-            function exemplo() {
-                console.log("Olá, Mundo!");
-                return true;
-            }
-            \`\`\`
-
-            ### Citações
-
-            > Esta é uma citação elegante que destaca informações importantes.
-
-            ### Links e Imagens
-
-            Visite o [Markdown Guide](https://www.markdownguide.org) para aprender mais.
-
-            ---
-
-            *Divirta-se escrevendo!*</textarea
+# teste
+          </textarea
           >
         </div>
       </div>
@@ -103,6 +59,7 @@ if (!isset($_SESSION["id"])) {
           <!-- A visualização será gerada aqui pelo JavaScript -->
         </div>
       </div>
+<!-- Fim da visualização -->
 
       <div class="actions">
         <button id="clear-btn">🧹 Limpar Editor</button>
@@ -134,7 +91,6 @@ if (!isset($_SESSION["id"])) {
             <p>
               <code>- Item não ordenado</code><br />
               <code>1. Item ordenado</code><br />
-              <code>- [ ] Tarefa</code>
             </p>
           </div>
           <div class="tip-card">
@@ -156,7 +112,6 @@ if (!isset($_SESSION["id"])) {
             <p>
               <code>> Citação</code><br />
               <code>--- Linha horizontal</code><br />
-              <code>| Tabela |</code>
             </p>
           </div>
         </div>

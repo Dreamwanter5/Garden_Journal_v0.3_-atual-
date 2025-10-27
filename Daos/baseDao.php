@@ -4,23 +4,28 @@ class BaseDAO
 {
     protected $connection;
 
-    
+
     function __construct()
     {
         $connection_string = "mysql:host=localhost;port=3306;dbname=gardenjournal;charset=utf8";
-        $db_user           = "root";
-        $db_pass           = "";  // ou sua senha, se houver
+        $db_user = "root";
+        $db_pass = "";  // senha se houver
 
-        $this->connection = new PDO(
-            $connection_string,
-            $db_user,
-            $db_pass
-        );
-
-        $this->connection->setAttribute(
-            PDO::ATTR_ERRMODE,
-            PDO::ERRMODE_EXCEPTION
-        );
+        try {
+            $this->connection = new PDO(
+                $connection_string,
+                $db_user,
+                $db_pass,
+                [
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                    PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"
+                ]
+            );
+        } catch (PDOException $e) {
+            error_log("BaseDAO::__construct - Erro de conexão: " . $e->getMessage());
+            throw $e;
+        }
     }
 
     public function executaComParametros(
@@ -42,7 +47,8 @@ class BaseDAO
         return $stmt;
     }
 
-    public function getLastInsertId() {
-    return $this->connection->lastInsertId();
-}
+    public function getLastInsertId()
+    {
+        return $this->connection->lastInsertId();
+    }
 }

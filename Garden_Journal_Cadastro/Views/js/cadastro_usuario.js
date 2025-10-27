@@ -31,30 +31,30 @@ const FormApp = {
         return true;
     },
     async enviarRequisicao() {
-        if (this.validarData()) {
-            try {
-                const response = await fetch("../Controllers/UsuarioController.php?acao=inserir",
-                    {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify(this.formData)
-                    }
-                )
-                const dados = await response.json();
-                this.mensagemRetorno = dados.mensagem;
+        // validarData() removido porque não existe campo data_nascimento no formulário
+        if (!this.validarSenha()) {
+            this.statusRetorno = 'error';
+            this.mensagemRetorno = this.errors.senha || 'Senha inválida';
+            return;
+        }
 
-                this.statusRetorno = response.ok ? "success" : "error";
+        try {
+            const response = await fetch("../../../Controllers/usuarioController.php?acao=inserir", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(this.formData)
+            });
 
-                if (this.statusRetorno == "success") {
-                    location.href = "listagem_usuario.html"
-                }
+            const dados = await response.json();
+            this.mensagemRetorno = dados.mensagem;
+            this.statusRetorno = response.ok ? "success" : "error";
+
+            if (this.statusRetorno === "success") {
+                setTimeout(() => window.location.href = "tela_do_usuario.php", 700);
             }
-            catch (error) {
-                this.mensagemRetorno = error.body.mensagem;
-                this.statusRetorno = "error";
-            }
+        } catch (error) {
+            this.mensagemRetorno = "Erro na comunicação com o servidor";
+            this.statusRetorno = "error";
         }
     }
 }
@@ -123,23 +123,5 @@ function validarEmail() {
         inputEmail.classList.add('is-valid');
         document.getElementById("erroEmail").innerText = "";
         return true;
-    }
-}
-
-function validarTelefone() {
-    const inputTelefone = document.getElementById("telefone");
-    const telefone = inputTelefone.value;
-
-    if (telefone === "") {
-        inputTelefone.classList.add('is-invalid');
-        document.getElementById("erroTelefone").innerText = "Favor, inserir um número existente";
-        console.log ("Número de Telefone invalido");
-        return false;
-    } 
-    else {
-        inputTelefone.classList.remove('is-invalid');
-        inputTelefone.classList.add('is-valid');
-        document.getElementById("erroTelefone").innerText = "";
-        return false;
     }
 }

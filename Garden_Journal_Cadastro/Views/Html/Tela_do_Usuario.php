@@ -62,7 +62,7 @@ if (!isset($_SESSION["id"])) {
                         </div>
                         <h4>Nota diária</h4>
                         <p class="text-muted">Registre suas observações e progresso</p>
-                        <a href="Anotacao.php" class="btn btn-outline-success mt-2">Acessar</a>
+                        <a href="Anotacaoteste.php" class="btn btn-outline-success mt-2">Acessar</a>
                     </div>
                 </div>
                 

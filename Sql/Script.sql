@@ -1,3 +1,4 @@
+
 create database gardenjournal;
 Use gardenjournal;
 
@@ -15,13 +16,6 @@ create table Usuario (
     constraint fk_usuario_configuracoes foreign key (configuracoes) references Configuracoes(idConfiguracoes)
 );
 
-create table acessoLogin (
-    idAcessoLogin int not null auto_increment primary key,
-    dt DATE,
-    hora Time,
-    id_usuario int not null,
-    constraint fk_acessoLogin_usuario foreign key (id_usuario) references Usuario(id_usuario)  
-);
 
 Create table categoria (
     id_categoria int not null auto_increment primary key,
@@ -61,3 +55,10 @@ CREATE TABLE nota_categoria (
     CONSTRAINT fk_nota_categoria_nota FOREIGN KEY (id_nota) REFERENCES nota(nome) ON DELETE CASCADE,
     CONSTRAINT fk_nota_categoria_categoria FOREIGN KEY (id_categoria) REFERENCES categoria(id_categoria) ON DELETE CASCADE
 );
+select * from usuario;
+
+INSERT INTO Configuracoes (descricao) VALUES ('Configuração padrão');
+
+-- definir valor default para a coluna usuario.configuracoes
+ALTER TABLE Usuario
+    MODIFY configuracoes INT NOT NULL DEFAULT 1;

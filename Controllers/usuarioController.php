@@ -8,6 +8,29 @@ require_once(__DIR__ . "/../Entidades/usuario.php");
 
 header('Content-Type: application/json; charset=utf-8');
 
+
+// DEBUG TEMPORÁRIO
+error_log('=== DEBUG AnotacaoController ===');
+error_log('GET: ' . print_r($_GET, true));
+error_log('POST raw: ' . file_get_contents('php://input'));
+error_log('SESSION id: ' . ($_SESSION['id'] ?? 'null'));
+
+$acao = $_GET['acao'] ?? '';
+
+// DEBUG do parâmetro acao
+error_log('acao parameter: ' . $acao);
+error_log('===============================');
+
+if ($acao !== 'salvar') {
+    http_response_code(400);
+    echo json_encode([
+        'mensagem' => 'Ação inválida', 
+        'debug_acao' => $acao,
+        'debug_get' => $_GET
+    ]);
+    exit();
+}
+
 class UsuarioController
 {
     private $dao;

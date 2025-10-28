@@ -5,6 +5,8 @@ error_reporting(E_ALL);
 
 header('Content-Type: application/json; charset=utf-8');
 
+// load entity first so DAOs that type-hint it won't fail
+require_once(__DIR__ . '/../Entidades/nota.php');
 require_once(__DIR__ . '/../Daos/notaDao.php');
 require_once(__DIR__ . '/../Daos/categoriaDao.php');
 
@@ -24,9 +26,12 @@ if ($acao !== 'salvar') {
 }
 
 $input = json_decode(file_get_contents('php://input'), true);
+
 $titulo = trim($input['titulo'] ?? '');
+$descricao = $input['descricao'] ?? '';
 $conteudo = $input['conteudo'] ?? '';
-$categorias = $input['categorias'] ?? []; // array de ids esperados
+$conteudo_html = $input['conteudo_html'] ?? '';
+$categorias = $input['categorias'] ?? [];
 
 if ($titulo === '') {
     http_response_code(400);
@@ -35,19 +40,25 @@ if ($titulo === '') {
 }
 
 try {
+    // montar entidade Nota
+    $nota = new Nota(
+        $titulo,
+        $descricao,
+        $conteudo,
+        (int) $_SESSION['id'],
+        (array) $categorias,
+        $conteudo_html
+    );
+
     $notaDao = new NotaDAO();
-    // Log the incoming data
-    error_log('[AnotacaoController::salvar] Input data: ' . print_r($input, true));
+    error_log('[AnotacaoController::salvar] Input: ' . print_r($input, true));
 
-    $categoriasIds = array_values(array_map('intval', (array) $categorias));
-    // Log the processed categories
-    error_log('[AnotacaoController::salvar] Categories: ' . print_r($categoriasIds, true));
-
-    $idNota = $notaDao->salvar($titulo, $conteudo, (int) $_SESSION['id'], $categoriasIds);
+    $idNota = $notaDao->salvar($nota);
     echo json_encode(['mensagem' => 'Nota salva com sucesso', 'id_nota' => $idNota]);
 } catch (Exception $e) {
-    error_log('[AnotacaoController::salvar] ERROR: ' . $e->getMessage());
-    error_log('[AnotacaoController::salvar] Stack trace: ' . $e->getTraceAsString());
+    // log completo e resposta JSON com a mensagem para facilitar depuração
+    error_log('[AnotacaoController::salvar] ERROR message: ' . $e->getMessage());
+    error_log('[AnotacaoController::salvar] TRACE: ' . $e->getTraceAsString());
     http_response_code(500);
     echo json_encode(['mensagem' => 'Erro ao salvar nota', 'erro' => $e->getMessage()]);
 }

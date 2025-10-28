@@ -28,16 +28,22 @@ class BaseDAO
         }
     }
 
-    public function executaComParametros(
-        $sql,
-        $parametros
-    ) {
-        $stmt = $this->connection->prepare($sql);
-        foreach ($parametros as $chave => $valor) {
-            $stmt->bindValue($chave, $valor);
+    public function executaComParametros($sql, $parametros)
+    {
+        try {
+            $stmt = $this->connection->prepare($sql);
+            foreach ($parametros as $chave => $valor) {
+                $stmt->bindValue($chave, $valor);
+            }
+            $stmt->execute();
+            return $stmt;
+        } catch (PDOException $e) {
+            // Log SQL, parâmetros e mensagem de erro para depuração
+            error_log("[BaseDAO::executaComParametros] SQL: " . $sql);
+            error_log("[BaseDAO::executaComParametros] Params: " . print_r($parametros, true));
+            error_log("[BaseDAO::executaComParametros] PDOException: " . $e->getMessage());
+            throw $e;
         }
-        $stmt->execute();
-        return $stmt;
     }
 
     public function executar($sql)

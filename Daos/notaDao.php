@@ -1,57 +1,59 @@
 <?php
 require_once(__DIR__ . '/baseDao.php');
-require_once(__DIR__ . '/categoriaDao.php');
+require_once(__DIR__ . '/../Entidades/nota.php');
 
 class NotaDAO extends BaseDAO
 {
-    /**
-     * Salva ou atualiza uma nota e vincula às categorias (recebe array de ids de categoria)
-     * Retorna o identificador da nota (neste esquema usamos o título como chave)
-     */
-    public function salvar($titulo, $conteudo, $idUsuario, $categoriasIds)
+    public function salvar(\Nota $nota)
     {
         try {
             $this->connection->beginTransaction();
 
-            // Log inputs for debugging
-            error_log("[NotaDAO::salvar] Saving note - Title: $titulo, UserId: $idUsuario");
-            error_log("[NotaDAO::salvar] Categories: " . print_r($categoriasIds, true));
+            $titulo = $nota->getTitulo();
+            $titulo = mb_substr(trim($titulo), 0, 45); // garante tamanho compatível com PK varchar(45)
+            $conteudo = $nota->getConteudo();
+            $idUsuario = (int) $nota->getIdUsuario();
+            $categoriasIds = (array) $nota->getCategorias();
 
-            // 1) Insert/update the note
-            $sql = "INSERT INTO nota (nome, texto, dt, id_usuario) 
+            error_log("[NotaDAO::salvar] title={$titulo} user={$idUsuario} categories=" . json_encode($categoriasIds));
+
+            // Inserir ou atualizar a nota (nome é PK)
+            $sql = "INSERT INTO nota (nome, texto, dt, id_usuario)
                     VALUES (:titulo, :conteudo, CURDATE(), :id_usuario)
-                    ON DUPLICATE KEY UPDATE 
+                    ON DUPLICATE KEY UPDATE
                         texto = VALUES(texto),
-                        dt = VALUES(dt)";
+                        dt = VALUES(dt),
+                        id_usuario = VALUES(id_usuario)";
             $this->executaComParametros($sql, [
                 ':titulo' => $titulo,
                 ':conteudo' => $conteudo,
                 ':id_usuario' => $idUsuario
             ]);
 
-            // 2) Handle categories if any
-            if (!empty($categoriasIds)) {
-                // Remove old links first
-                $sqlDelete = "DELETE FROM nota_categoria WHERE id_nota = :id_nota";
-                $this->executaComParametros($sqlDelete, [':id_nota' => $titulo]);
+            // Remover vínculos antigos
+            $sqlDelete = "DELETE FROM nota_categoria WHERE id_nota = :id_nota";
+            $this->executaComParametros($sqlDelete, [':id_nota' => $titulo]);
 
-                // Add new category links
-                $sqlInsert = "INSERT INTO nota_categoria (id_nota, id_categoria) 
-                          VALUES (:id_nota, :id_categoria)";
-                foreach ($categoriasIds as $categoriaId) {
-                    $this->executaComParametros($sqlInsert, [
+            // Normalizar e remover categorias duplicadas antes de inserir vínculos
+            $categoriasIds = array_values(array_filter(array_unique(array_map('intval', $categoriasIds)), function ($v) {
+                return $v > 0; }));
+
+            // Inserir vínculos novos - usar INSERT IGNORE para evitar erro de duplicate key
+            if (!empty($categoriasIds)) {
+                $sqlVinculo = "INSERT IGNORE INTO nota_categoria (id_nota, id_categoria) VALUES (:id_nota, :id_categoria)";
+                foreach ($categoriasIds as $idCategoria) {
+                    $this->executaComParametros($sqlVinculo, [
                         ':id_nota' => $titulo,
-                        ':id_categoria' => $categoriaId
+                        ':id_categoria' => $idCategoria
                     ]);
                 }
             }
 
             $this->connection->commit();
             return $titulo;
-
         } catch (Exception $e) {
             $this->connection->rollBack();
-            error_log("[NotaDAO::salvar] Error: " . $e->getMessage());
+            error_log("[NotaDAO::salvar] Erro: " . $e->getMessage());
             throw $e;
         }
     }

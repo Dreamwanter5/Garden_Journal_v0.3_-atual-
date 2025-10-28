@@ -205,11 +205,10 @@ Visite o [Markdown Guide](https://www.markdownguide.org) para aprender mais.
                     this.mostrarMensagem("Nota salva com sucesso!", true);
                 }
                 
-                // Limpa o formulário após salvar com sucesso
+                // redireciona para a tela do usuário após salvar
                 setTimeout(() => {
-                    this.limparEditor();
-                }, 2000);
-                
+                    window.location.href = 'tela_do_usuario.php';
+                }, 700);
             } else {
                 if (isJson && responseBody.error) {
                     this.mostrarMensagem(responseBody.error, false);

@@ -3,11 +3,11 @@ class Nota implements JsonSerializable
 {
     private $titulo;
     private $descricao;
-    private $conteudo;       // markdown
-    private $conteudo_html;  // html gerado (opcional)
+    private $conteudo;
+    private $conteudo_html;
     private $id_usuario;
-    private $dt;             // DATE string
-    private $categorias = []; // array de ids
+    private $dt;
+    private $categorias = [];
 
     public function __construct(
         string $titulo = '',
@@ -16,7 +16,7 @@ class Nota implements JsonSerializable
         int $id_usuario = 0,
         array $categorias = [],
         string $conteudo_html = '',
-        string $dt = null
+        ?string $dt = null
     ) {
         $this->titulo = $titulo;
         $this->descricao = $descricao;

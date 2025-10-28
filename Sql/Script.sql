@@ -71,3 +71,7 @@ CREATE TABLE nota_categoria (
 INSERT INTO Configuracoes (descricao) 
 VALUES ('Configuração padrão')
 ON DUPLICATE KEY UPDATE descricao = VALUES(descricao);
+
+-- Adiciona coluna descricao (execute uma vez)
+ALTER TABLE nota
+  ADD COLUMN IF NOT EXISTS descricao VARCHAR(500) DEFAULT NULL;

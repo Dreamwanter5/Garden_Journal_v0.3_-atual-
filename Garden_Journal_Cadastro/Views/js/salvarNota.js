@@ -78,7 +78,9 @@ const app = {
             .replace(/<\/ul>\s*<ul>/gim, "")
             .replace(/<\/ol>\s*<ol>/gim, "")
             .replace(/\[([^\[]+)\]\(([^\)]+)\)/gim, '<a href="$2" target="_blank">$1</a>')
-            .replace(/!\[([^\[]+)\]\(([^\)]+)\)/gim, '<img src="$2" alt="$1">')
+            .replace(/!\[([^\]]*)\]\((\S+?)(?:\s+"([^"]*)")?\)/gim, function(_, alt, url, title) {
+                return '<img src="' + url + '" alt="' + (alt||'') + (title ? '" title="' + title : '') + '">';
+            })
             .replace(/^\s*(\n)?(.+)/gim, function (m) {
                 return /\<(\/)?(h\d|ul|ol|li|blockquote|pre|img)/.test(m)
                     ? m

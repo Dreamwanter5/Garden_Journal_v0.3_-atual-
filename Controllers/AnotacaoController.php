@@ -19,6 +19,20 @@ if (!isset($_SESSION['id'])) {
 
 $acao = $_GET['acao'] ?? '';
 
+// novo: listar notas do usuário
+if ($acao === 'listar') {
+    try {
+        $notaDao = new NotaDAO();
+        $notas = $notaDao->buscarPorUsuario((int) $_SESSION['id']);
+        echo json_encode(['notas' => $notas]);
+    } catch (Exception $e) {
+        error_log('[AnotacaoController::listar] ' . $e->getMessage());
+        http_response_code(500);
+        echo json_encode(['mensagem' => 'Erro ao listar notas', 'erro' => $e->getMessage()]);
+    }
+    exit();
+}
+
 if ($acao !== 'salvar') {
     http_response_code(400);
     echo json_encode(['mensagem' => 'Ação inválida']);
@@ -53,9 +67,9 @@ try {
     $notaDao = new NotaDAO();
     error_log('[AnotacaoController::salvar] Input: ' . print_r($input, true));
 
-    $idNota = $notaDao->salvar($nota);
-    echo json_encode(['mensagem' => 'Nota salva com sucesso', 'id_nota' => $idNota]);
-} catch (Exception $e) {
+    $notaDao->salvar($nota);
+    echo json_encode(['mensagem' => 'Nota salva com sucesso']);
+    } catch (Exception $e) {
     // log completo e resposta JSON com a mensagem para facilitar depuração
     error_log('[AnotacaoController::salvar] ERROR message: ' . $e->getMessage());
     error_log('[AnotacaoController::salvar] TRACE: ' . $e->getTraceAsString());

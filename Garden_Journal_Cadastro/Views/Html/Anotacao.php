@@ -14,9 +14,8 @@ if (!isset($_SESSION["id"])) {
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
   <script src="https://unpkg.com/petite-vue" defer></script>
-  <link rel="stylesheet" href="../Css/AnotacaoTeste.css">
+  <link rel="stylesheet" href="../Css/Anotacao.css">
   <script src="../js/salvarNota.js" defer></script>
-  <!-- <script src="../js/nota.js" defer></script> -->
 </head>
 
 <body>
@@ -111,18 +110,62 @@ if (!isset($_SESSION["id"])) {
 
       <!-- Botões de ação -->
       <div class="actions mt-3">
-        <button type="button" @click="limparEditor" class="btn btn-outline-secondary">🧹 Limpar Editor</button>
-        <button type="button" @click="carregarExemplo" class="btn btn-outline-primary">📋 Texto de Exemplo</button>
         <button type="submit" class="btn btn-primary">💾 Salvar Nota</button>
         <button type="button" @click="downloadHTML" class="btn btn-success">📥 Download HTML</button>
       </div>
     </form>
 
-    <!-- Seção de dicas (fora do formulário) -->
+    <!-- Algumas dicas -->
     <div class="tips mt-5">
       <h3>📚 Guia Rápido de Markdown</h3>
       <div class="tips-grid">
-        <!-- ... (mantenha o mesmo conteúdo das dicas) ... -->
+        <div class="tip-card">
+            <h4>Títulos</h4>
+            <p>
+              <code># Título 1</code><br />
+              <code>## Título 2</code><br />
+              <code>### Título 3</code>
+            </p>
+          </div>
+          <div class="tip-card">
+            <h4>Ênfase</h4>
+            <p>
+              <code>**negrito**</code><br />
+              <code>*itálico*</code><br />
+              <code>~~tachado~~</code>
+            </p>
+          </div>
+          <div class="tip-card">
+            <h4>Listas</h4>
+            <p>
+              <code>- Item não ordenado</code><br />
+              <code>1. Item ordenado</code><br />
+            </p>
+          </div>
+          <div class="tip-card">
+            <h4>Código</h4>
+            <p>
+              <code>`código inline`</code><br />
+            </p>
+          </div>
+          <div class="tip-card">
+            <h4>Links e Imagens</h4>
+            <p>
+              <code>[texto](url)</code><br />
+              <small style="font-size:0.6rem; display:block; color:#6c757d;">
+                No momento o código não suporta o formato original de inserção em MD, eis aqui uma alternativa
+              </small>
+              <code>&lt;img src="link" alt="descrição"/&gt;</code>
+            </p>
+          </div>
+          <div class="tip-card">
+            <h4>Outros</h4>
+            <p>
+              <code>> Citação</code><br />
+              <code>--- Linha horizontal</code><br />
+            </p>
+          </div>
+        </div>
       </div>
     </div>
 

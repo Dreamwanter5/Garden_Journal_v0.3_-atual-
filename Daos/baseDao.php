@@ -4,27 +4,18 @@ class BaseDAO
 {
     protected $connection;
 
-
     function __construct()
     {
-        $connection_string = "mysql:host=localhost;port=3306;dbname=gardenjournal;charset=utf8";
-        $db_user = "root";
-        $db_pass = "";  // senha se houver
+        $dsn = "mysql:host=localhost;port=3306;dbname=gardenjournal;charset=utf8";
+        $username = "root";
+        $password = "";
 
         try {
-            $this->connection = new PDO(
-                $connection_string,
-                $db_user,
-                $db_pass,
-                [
-                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                    PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"
-                ]
-            );
+            $this->connection = new PDO($dsn, $username, $password);
+            $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $e) {
-            error_log("BaseDAO::__construct - Erro de conexão: " . $e->getMessage());
-            throw $e;
+            error_log("[BaseDAO] Erro de conexão: " . $e->getMessage());
+            die("Erro ao conectar ao banco de dados.");
         }
     }
 
@@ -38,7 +29,6 @@ class BaseDAO
             $stmt->execute();
             return $stmt;
         } catch (PDOException $e) {
-            // Log SQL, parâmetros e mensagem de erro para depuração
             error_log("[BaseDAO::executaComParametros] SQL: " . $sql);
             error_log("[BaseDAO::executaComParametros] Params: " . print_r($parametros, true));
             error_log("[BaseDAO::executaComParametros] PDOException: " . $e->getMessage());
@@ -46,15 +36,21 @@ class BaseDAO
         }
     }
 
-    public function executar($sql)
+    public function executa($sql)
     {
-        $stmt = $this->connection->prepare($sql);
-        $stmt->execute();
-        return $stmt;
+        try {
+            $stmt = $this->connection->prepare($sql);
+            $stmt->execute();
+            return $stmt;
+        } catch (PDOException $e) {
+            error_log("[BaseDAO::executa] SQL: " . $sql);
+            error_log("[BaseDAO::executa] PDOException: " . $e->getMessage());
+            throw $e;
+        }
     }
 
-    public function getLastInsertId()
+    public function getConnection()
     {
-        return $this->connection->lastInsertId();
+        return $this->connection;
     }
 }

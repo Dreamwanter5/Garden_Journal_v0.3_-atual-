@@ -1,24 +1,117 @@
 const app = {
     formData: {
         titulo: '',
-        descricao: '',         // <--- adicionada
+        tituloOriginal: '',
+        descricao: '',
         conteudo: '',
         categoriasSelecionadas: []
     },
-    
-    categoriasDisponiveis: [
-        { id: 1, nome: 'Trabalho' },
-        { id: 2, nome: 'Estudos' },
-        { id: 3, nome: 'Pessoal' },
-        { id: 4, nome: 'Ideias' },
-        { id: 5, nome: 'Projetos' },
-        { id: 6, nome: 'Lembretes' }
-    ],
-    
+
+    // estado adicional exigido pelo template/métodos
     preview: '',
     mensagem: '',
     sucesso: false,
-    errors: {},
+    errors: { titulo: '', descricao: '', conteudo: '' },
+
+    categoriasDisponiveis: [],
+    novaCategoriaNome: '',
+    criandoCategoria: false,
+    erroCategoria: '',
+
+    // novo: carregar nota ao montar componente
+    async mounted() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const titulo = urlParams.get('titulo');
+        console.log('[Anotacao] mounted, titulo param =', titulo);
+
+        // 1) carregar categorias do usuário
+        await this.carregarCategorias();
+
+        // 2) se veio título, carregar nota e aplicar seleção
+        if (titulo) {
+            await this.carregarNota(titulo);
+        }
+    },
+
+    async carregarCategorias() {
+        try {
+            const url = `/Programacao_web/Garden_Journal_v0.3_(atual)/Controllers/AnotacaoController.php?acao=categorias`;
+            const resp = await fetch(url, { credentials: 'same-origin' });
+            if (!resp.ok) throw new Error('Falha ao buscar categorias');
+            const data = await resp.json();
+            this.categoriasDisponiveis = (data.categorias || []).map(c => ({
+                id: Number(c.id_categoria),
+                nome: c.nome
+            }));
+            console.log('[Anotacao] categorias carregadas:', this.categoriasDisponiveis);
+        } catch (e) {
+            console.error('Erro ao carregar categorias:', e);
+            this.categoriasDisponiveis = [];
+        }
+    },
+
+    async carregarNota(titulo) {
+        try {
+            const url = `/Programacao_web/Garden_Journal_v0.3_(atual)/Controllers/AnotacaoController.php?acao=buscar&titulo=${encodeURIComponent(titulo)}`;
+            console.log('[Anotacao] buscando nota:', url);
+            const response = await fetch(url, { credentials: 'same-origin' });
+            if (!response.ok) throw new Error('Nota não encontrada');
+
+            const data = await response.json();
+            const nota = data.nota;
+
+            this.formData.titulo = nota.titulo || '';
+            this.formData.tituloOriginal = nota.titulo || '';
+            this.formData.descricao = nota.descricao || '';
+            this.formData.conteudo = nota.texto || '';
+            // aplica seleção convertendo para números
+            this.formData.categoriasSelecionadas = Array.isArray(nota.categorias)
+                ? nota.categorias.map(Number)
+                : [];
+
+            this.atualizarPreview();
+            console.log('[salvarNota] Nota carregada:', nota, 'selecionadas=', this.formData.categoriasSelecionadas);
+        } catch (error) {
+            console.error('Erro ao carregar nota:', error);
+            this.mostrarMensagem('Erro ao carregar nota para edição', false);
+        }
+    },
+
+    async adicionarCategoria() {
+        this.erroCategoria = '';
+        const nome = (this.novaCategoriaNome || '').trim();
+        if (!nome) return;
+
+        try {
+            this.criandoCategoria = true;
+            const url = `/Programacao_web/Garden_Journal_v0.3_(atual)/Controllers/AnotacaoController.php?acao=categorias`;
+            const resp = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'same-origin',
+                body: JSON.stringify({ nome })
+            });
+
+            const data = await resp.json();
+            if (!resp.ok) {
+                this.erroCategoria = data.mensagem || 'Falha ao criar categoria';
+                return;
+            }
+
+            const c = data.categoria;
+            const nova = { id: Number(c.id_categoria), nome: c.nome };
+            // adiciona na lista e já marca como selecionada
+            this.categoriasDisponiveis.push(nova);
+            if (!this.formData.categoriasSelecionadas.includes(nova.id)) {
+                this.formData.categoriasSelecionadas.push(nova.id);
+            }
+            this.novaCategoriaNome = '';
+        } catch (e) {
+            this.erroCategoria = 'Erro ao criar categoria';
+        } finally {
+            this.criandoCategoria = false;
+        }
+    },
 
     // Validações
     validarTitulo() {
@@ -95,7 +188,7 @@ const app = {
 
     limparEditor() {
         this.formData.titulo = '';
-        this.formData.descricao = '';         // <--- limpa
+        this.formData.descricao = '';
         this.formData.conteudo = '';
         this.formData.categoriasSelecionadas = [];
         this.preview = '';
@@ -166,29 +259,23 @@ Visite o [Markdown Guide](https://www.markdownguide.org) para aprender mais.
         }
 
         try {
-            // OPÇÃO 1: Usando FormData tradicional (para envio de arquivos também)
-            const formData = new FormData();
-            formData.append('titulo', this.formData.titulo);
-            formData.append('descricao', this.formData.descricao);   // <--- enviado
-            formData.append('conteudo', this.formData.conteudo);
-            formData.append('conteudo_html', this.preview);
-            this.formData.categoriasSelecionadas.forEach(categoria => {
-                formData.append('categorias[]', categoria);
+            const url = '/Programacao_web/Garden_Journal_v0.3_(atual)/Controllers/AnotacaoController.php?acao=salvar';
+            console.log('[Anotacao] salvando em:', url, 'payload:', {
+              titulo: this.formData.titulo, titulo_original: this.formData.tituloOriginal, categorias: this.formData.categoriasSelecionadas
             });
-
-            // OPÇÃO 2: Usando JSON (mantendo a abordagem atual)
-            const response = await fetch('../../../Controllers/AnotacaoController.php?acao=salvar', {
+            const response = await fetch(url, {
                 method: "POST",
                 body: JSON.stringify({
                     titulo: this.formData.titulo,
-                    descricao: this.formData.descricao,   // <--- enviado
+                    titulo_original: this.formData.tituloOriginal || null,
+                    descricao: this.formData.descricao,
                     conteudo: this.formData.conteudo,
                     conteudo_html: this.preview,
-                    categorias: this.formData.categoriasSelecionadas
+                    // envia ids numéricos
+                    categorias: (this.formData.categoriasSelecionadas || []).map(Number)
                 }),
-                headers: {
-                    "content-type": "application/json"
-                }
+                headers: { "content-type": "application/json" },
+                credentials: 'same-origin'
             });
 
             let responseBody;
@@ -201,21 +288,16 @@ Visite o [Markdown Guide](https://www.markdownguide.org) para aprender mais.
             }
 
             if (response.ok) {
-                if (isJson && responseBody.mensagem) {
-                    this.mostrarMensagem(responseBody.mensagem, true);
-                } else {
-                    this.mostrarMensagem("Nota salva com sucesso!", true);
-                }
-                
-                // redireciona para a tela do usuário após salvar
+                this.mostrarMensagem(
+                    isJson && responseBody.mensagem ? responseBody.mensagem : "Nota salva com sucesso!",
+                    true
+                );
                 setTimeout(() => {
-                    window.location.href = 'tela_do_usuario.php';
+                    window.location.href = 'minhas_anotacoes.php'; // retorna à listagem
                 }, 700);
             } else {
-                if (isJson && responseBody.error) {
-                    this.mostrarMensagem(responseBody.error, false);
-                } else if (isJson && responseBody.mensagem) {
-                    this.mostrarMensagem(responseBody.mensagem, false);
+                if (isJson && (responseBody.error || responseBody.mensagem)) {
+                    this.mostrarMensagem(responseBody.error || responseBody.mensagem, false);
                 } else {
                     this.mostrarMensagem("Erro ao salvar nota", false);
                 }

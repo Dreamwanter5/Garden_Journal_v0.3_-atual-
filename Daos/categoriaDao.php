@@ -21,17 +21,20 @@ class CategoriaDAO extends BaseDAO
         $sql = "INSERT INTO categoria (nome, data_criacao, id_usuario) 
                 VALUES (:nome, CURDATE(), :id_usuario)";
 
-        return $this->executaComParametros($sql, [
+        $this->executaComParametros($sql, [
             ':nome' => $nome,
             ':id_usuario' => $idUsuario
         ]);
+
+        return (int) $this->connection->lastInsertId();
     }
 
     public function buscarPorUsuario($idUsuario)
     {
         $sql = "SELECT id_categoria, nome, data_criacao, emoji, imagem 
                 FROM categoria 
-                WHERE id_usuario = :id_usuario";
+                WHERE id_usuario = :id_usuario
+                ORDER BY nome ASC";
 
         $stmt = $this->executaComParametros($sql, [':id_usuario' => $idUsuario]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -47,6 +50,7 @@ class CategoriaDAO extends BaseDAO
             ':id_categoria' => $idCategoria
         ]);
     }
+
     public function buscarIdPorNome($nome, $idUsuario)
     {
         $sql = "SELECT id_categoria FROM categoria 

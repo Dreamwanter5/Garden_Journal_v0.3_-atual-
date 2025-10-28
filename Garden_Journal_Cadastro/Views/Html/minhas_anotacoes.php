@@ -14,51 +14,84 @@ if (!isset($_SESSION["id"])) {
     <title>Minhas Anotações</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="../Css/Anotacao.css">
 </head>
 
 <body>
-    <?php include_once("partialsmenu.php"); ?>
+    <?php @include_once("partialsmenu.php"); ?>
 
-    <div class="container py-4" v-scope="notesApp" @vue:mounted="mounted">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1>Minhas Anotações</h1>
+    <div id="app-root" class="container py-4" v-scope="notesApp" @vue:mounted="mounted">
+        <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center mb-3">
+            <h1 class="h3 m-0">Minhas Anotações</h1>
             <a href="Anotacao.php" class="btn btn-success">+ Nova Anotação</a>
         </div>
 
-        <div v-if="loading" class="text-center my-5">
-            <div class="spinner-border text-success" role="status">
-                <span class="visually-hidden">Carregando...</span>
+        <!-- Filtros -->
+        <div class="card mb-3">
+            <div class="card-body">
+                <div class="row g-2">
+                    <div class="col-12 col-md-6">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-search"></i></span>
+                            <input type="text" class="form-control" placeholder="Buscar por título..."
+                                v-model="termo" />
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-tags"></i></span>
+                            <select class="form-select" v-model="categoriaSelecionada">
+                                <option value="">Todas as categorias</option>
+                                <option v-for="cat in categoriasDisponiveis" :key="cat" :value="cat">{{ cat }}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-2 d-grid d-md-block">
+                        <button class="btn btn-outline-secondary w-100" @click="limparFiltros">
+                            <i class="bi bi-eraser"></i> Limpar
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div v-if="!loading && notas.length === 0" class="alert alert-info">
-            Você ainda não tem anotações.
+        <div v-if="loading" class="text-center my-5">
+            <div class="spinner-border text-success" role="status"></div>
         </div>
 
-        <div class="row g-3" v-if="!loading && notas.length > 0">
-            <div class="col-12 col-md-6 col-lg-4" v-for="nota in notas" :key="nota.titulo">
+        <div v-if="!loading && filteredNotas().length === 0" class="alert alert-info">
+            Nenhuma anotação encontrada com os filtros atuais.
+        </div>
+
+        <div v-if="!loading && filteredNotas().length > 0" class="mb-2">
+            <small class="text-muted">Total: {{ filteredNotas().length }}</small>
+        </div>
+
+        <div class="row g-3" v-if="!loading && filteredNotas().length > 0">
+            <div class="col-12 col-md-6 col-lg-4" v-for="nota in filteredNotas()" :key="nota.titulo">
                 <div class="card h-100">
                     <div class="card-body d-flex flex-column">
                         <h5 class="card-title text-truncate">{{ nota.titulo }}</h5>
-                        <p class="card-text text-muted mb-2">
-                            {{ nota.descricao || 'Sem descrição' }}
-                        </p>
+                        <p class="card-text text-muted mb-2">{{ nota.descricao || 'Sem descrição' }}</p>
+
                         <div class="mt-auto">
                             <div class="mb-2">
                                 <small class="text-muted">
                                     <i class="bi bi-calendar3"></i> {{ nota.dt || 'Sem data' }}
                                 </small>
                             </div>
-                            <div class="mb-3" style="min-height: 28px;">
-                                <span v-if="nota.categorias" class="badge bg-secondary me-1"
-                                    v-for="cat in nota.categorias.split(',')" :key="cat">
-                                    {{ cat.trim() }}
-                                </span>
+
+                            <div class="mb-3" style="min-height:28px;">
+                                <div v-if="categoriesList(nota).length">
+                                    <span class="badge bg-secondary me-1" v-for="cat in categoriesList(nota)"
+                                        :key="cat">
+                                        {{ cat }}
+                                    </span>
+                                </div>
                                 <small v-else class="text-muted fst-italic">Sem categorias</small>
                             </div>
+
                             <div class="d-flex gap-2">
-                                <button class="btn btn-sm btn-outline-primary" @click="abrir(nota)">
+                                <button class="btn btn-sm btn-primary text-white" @click="abrir(nota)">
                                     <i class="bi bi-eye"></i> Visualizar
                                 </button>
                                 <a :href="'Anotacao.php?titulo=' + encodeURIComponent(nota.titulo)"
@@ -72,19 +105,19 @@ if (!isset($_SESSION["id"])) {
             </div>
         </div>
 
-        <!-- Modal de preview - remover aria-hidden para evitar warning -->
+        <!-- Modal -->
         <div class="modal fade" id="previewModal" tabindex="-1">
             <div class="modal-dialog modal-xl modal-dialog-scrollable">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">{{ selecionada?.titulo }}</h5>
+                        <h5 class="modal-title">{{ selecionada && selecionada.titulo }}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
                     </div>
                     <div class="modal-body">
-                        <div v-html="renderMarkdown(selecionada?.texto || '')"></div>
+                        <div v-html="renderMarkdown(selecionada ? selecionada.texto : '')"></div>
                     </div>
                     <div class="modal-footer">
-                        <a :href="'Anotacao.php?titulo=' + encodeURIComponent(selecionada?.titulo || '')"
+                        <a :href="'Anotacao.php?titulo=' + encodeURIComponent(selecionada ? selecionada.titulo : '')"
                             class="btn btn-outline-primary">
                             <i class="bi bi-pencil"></i> Editar
                         </a>
@@ -97,6 +130,7 @@ if (!isset($_SESSION["id"])) {
         </div>
     </div>
 
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/petite-vue"></script>
     <script

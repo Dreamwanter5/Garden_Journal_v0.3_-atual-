@@ -5,43 +5,76 @@ const notesApp = {
   loading: true,
   selecionada: null,
 
+  // filtros
+  termo: '',
+  categoriaSelecionada: '',
+  categoriasDisponiveis: [],
+
   async mounted() {
     console.log('[notesApp] mounted');
+    await this.carregarCategorias();
     await this.carregarNotas();
   },
 
   async carregarNotas() {
     this.loading = true;
     try {
-      // URL absoluta para evitar erros de path relativos
       const url = '/Programacao_web/Garden_Journal_v0.3_(atual)/Controllers/AnotacaoController.php?acao=listar';
       console.log('[notesApp] fetching', url);
-
-      const resp = await fetch(url, {
-        method: 'GET',
-        credentials: 'same-origin' // garante envio do cookie de sessão
-      });
-
+      const resp = await fetch(url, { method: 'GET', credentials: 'same-origin' });
       console.log('[notesApp] fetch status:', resp.status, resp.statusText);
-
       if (!resp.ok) {
         const text = await resp.text();
         console.error('[notesApp] erro no servidor:', resp.status, text);
         this.notas = [];
-        alert('Erro ao carregar anotações: ' + resp.status + ' — veja console');
         return;
       }
-
       const data = await resp.json();
       console.log('[notesApp] response json:', data);
       this.notas = data.notas || [];
     } catch (e) {
       console.error("Erro ao carregar notas (fetch):", e);
       this.notas = [];
-      alert('Erro ao comunicar com o servidor. Veja console.');
     } finally {
       this.loading = false;
     }
+  },
+
+  async carregarCategorias() {
+    try {
+      const url = '/Programacao_web/Garden_Journal_v0.3_(atual)/Controllers/AnotacaoController.php?acao=categorias';
+      const resp = await fetch(url, { credentials: 'same-origin' });
+      if (!resp.ok) throw new Error('Falha ao buscar categorias');
+      const data = await resp.json();
+      // usar NOME de categoria (as notas trazem nomes concatenados)
+      const nomes = (data.categorias || []).map(c => (c.nome || '').trim()).filter(Boolean);
+      this.categoriasDisponiveis = Array.from(new Set(nomes)).sort((a,b)=>a.localeCompare(b));
+      console.log('[notesApp] categorias para filtro:', this.categoriasDisponiveis);
+    } catch (e) {
+      console.error('Erro ao carregar categorias para filtro:', e);
+      this.categoriasDisponiveis = [];
+    }
+  },
+
+  filteredNotas() {
+    const q = (this.termo || '').toLowerCase().trim();
+    const cat = (this.categoriaSelecionada || '').toLowerCase().trim();
+
+    return (this.notas || []).filter(n => {
+      const okTitle = q ? (n.titulo || '').toLowerCase().includes(q) : true;
+
+      if (!cat) return okTitle;
+
+      const list = this.categoriesList(n).map(s => s.toLowerCase());
+      const okCat = list.includes(cat);
+
+      return okTitle && okCat;
+    });
+  },
+
+  limparFiltros() {
+    this.termo = '';
+    this.categoriaSelecionada = '';
   },
 
   abrir(nota) {
@@ -49,6 +82,14 @@ const notesApp = {
     const modalEl = document.getElementById('previewModal');
     const modal = new bootstrap.Modal(modalEl);
     modal.show();
+  },
+
+  categoriesList(nota) {
+    if (!nota) return [];
+    // notas.listar retorna nomes concatenados
+    if (Array.isArray(nota.categorias)) return nota.categorias;
+    const s = (nota.categorias || '').toString();
+    return s.split(',').map(x => x.trim()).filter(Boolean);
   },
 
   renderMarkdown(markdown = '') {
@@ -71,18 +112,14 @@ const notesApp = {
       })
       .replace(/\[([^\[]+)\]\(([^\)]+)\)/gim, '<a href="$2" target="_blank">$1</a>')
       .replace(/^\s*(\n)?(.+)/gim, function (m) {
-        return /\<(\/)?(h\d|ul|ol|li|blockquote|pre|img)/.test(m)
-          ? m
-          : "<p>" + m + "</p>";
+        return /\<(\/)?(h\d|ul|ol|li|blockquote|pre|img)/.test(m) ? m : "<p>" + m + "</p>";
       })
       .replace(/\n$/gim, "<br>");
   }
 };
 
-// Wait for DOM and mount once
 document.addEventListener("DOMContentLoaded", () => {
   console.log('Debug: DOM loaded, mounting app...');
-  // expose `notesApp` under the same name used in v-scope
-  PetiteVue.createApp({ notesApp }).mount();
+  PetiteVue.createApp({ notesApp }).mount('#app-root');
   console.log('Debug: App mounted');
 });

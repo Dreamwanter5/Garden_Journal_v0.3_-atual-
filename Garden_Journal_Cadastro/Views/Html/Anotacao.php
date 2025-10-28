@@ -22,7 +22,7 @@ if (!isset($_SESSION["id"])) {
 <body>
     <?php include_once("partialsmenu.php"); ?>
 
-    <div class="container" v-scope="app">
+    <div class="container" v-scope="app" @vue:mounted="mounted">
         <!-- FORMULÁRIO PRINCIPAL -->
         <form @submit.prevent="salvarNota" id="form-anotacao">
             <header>
@@ -54,12 +54,23 @@ if (!isset($_SESSION["id"])) {
                         <div v-for="categoria in categoriasDisponiveis" :key="categoria.id" class="form-check">
                             <input class="form-check-input" type="checkbox" :value="categoria.id"
                                 :id="'cat-' + categoria.id" v-model="formData.categoriasSelecionadas"
-                                :name="'categorias[]'"> <!-- Importante para formulário tradicional -->
+                                :name="'categorias[]'">
                             <label class="form-check-label" :for="'cat-' + categoria.id">
                                 {{ categoria.nome }}
                             </label>
                         </div>
                     </div>
+
+                    <!-- Criar nova categoria -->
+                    <div class="mt-3 d-flex gap-2">
+                        <input type="text" class="form-control" placeholder="Nova categoria..."
+                            v-model="novaCategoriaNome" @keyup.enter="adicionarCategoria" />
+                        <button type="button" class="btn btn-outline-success" @click="adicionarCategoria"
+                            :disabled="criandoCategoria">
+                            {{ criandoCategoria ? 'Criando...' : 'Adicionar' }}
+                        </button>
+                    </div>
+                    <small class="text-danger" v-if="erroCategoria">{{ erroCategoria }}</small>
                 </div>
             </div>
 

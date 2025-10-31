@@ -63,4 +63,33 @@ class CategoriaDAO extends BaseDAO
 
         return $stmt->fetchColumn();
     }
+
+    // novo: renomear
+    public function atualizarNome($idCategoria, $idUsuario, $novoNome)
+    {
+        $sql = "UPDATE categoria SET nome = :nome
+                WHERE id_categoria = :id AND id_usuario = :id_usuario";
+
+        $stmt = $this->executaComParametros($sql, [
+            ':nome' => $novoNome,
+            ':id' => $idCategoria,
+            ':id_usuario' => $idUsuario
+        ]);
+
+        return $stmt->rowCount();
+    }
+
+    // novo: remover (pivot é ON DELETE CASCADE)
+    public function remover($idCategoria, $idUsuario)
+    {
+        $sql = "DELETE FROM categoria
+                WHERE id_categoria = :id AND id_usuario = :id_usuario";
+
+        $stmt = $this->executaComParametros($sql, [
+            ':id' => $idCategoria,
+            ':id_usuario' => $idUsuario
+        ]);
+
+        return $stmt->rowCount();
+    }
 }

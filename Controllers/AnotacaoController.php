@@ -60,13 +60,14 @@ if ($acao === 'listar') {
     exit();
 }
 
-// novo: listar/criar categorias do usuário logado
+// novo: listar/criar/editar/excluir categorias do usuário logado
 if ($acao === 'categorias') {
     try {
         $categoriaDao = new CategoriaDAO();
+        $userId = (int) $_SESSION['id'];
 
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-            $categorias = $categoriaDao->buscarPorUsuario((int) $_SESSION['id']);
+            $categorias = $categoriaDao->buscarPorUsuario($userId);
             echo json_encode(['categorias' => $categorias]);
         } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $body = json_decode(file_get_contents('php://input'), true);
@@ -76,16 +77,51 @@ if ($acao === 'categorias') {
                 echo json_encode(['mensagem' => 'Nome da categoria é obrigatório']);
                 exit();
             }
-
-            // evita duplicadas por usuário
-            if ($categoriaDao->existe($nome, (int) $_SESSION['id'])) {
+            if ($categoriaDao->existe($nome, $userId)) {
                 http_response_code(409);
                 echo json_encode(['mensagem' => 'Categoria já existe']);
                 exit();
             }
-
-            $id = $categoriaDao->inserir($nome, (int) $_SESSION['id']);
+            $id = $categoriaDao->inserir($nome, $userId);
             echo json_encode(['categoria' => ['id_categoria' => (int) $id, 'nome' => $nome]]);
+        } elseif ($_SERVER['REQUEST_METHOD'] === 'PUT' || $_SERVER['REQUEST_METHOD'] === 'PATCH') {
+            $body = json_decode(file_get_contents('php://input'), true);
+            $id = (int) ($body['id_categoria'] ?? 0);
+            $novoNome = isset($body['nome']) ? trim((string) $body['nome']) : '';
+            if ($id <= 0 || $novoNome === '') {
+                http_response_code(400);
+                echo json_encode(['mensagem' => 'Dados inválidos']);
+                exit();
+            }
+            if ($categoriaDao->existe($novoNome, $userId)) {
+                http_response_code(409);
+                echo json_encode(['mensagem' => 'Já existe uma categoria com esse nome']);
+                exit();
+            }
+            $rows = $categoriaDao->atualizarNome($id, $userId, $novoNome);
+            if ($rows === 0) {
+                http_response_code(404);
+                echo json_encode(['mensagem' => 'Categoria não encontrada']);
+                exit();
+            }
+            echo json_encode(['mensagem' => 'Categoria atualizada']);
+        } elseif ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
+            // id via querystring ?id= ou no corpo JSON
+            $raw = file_get_contents('php://input');
+            $body = json_decode($raw ?: '{}', true);
+            $id = (int) ($_GET['id'] ?? ($body['id_categoria'] ?? 0));
+            if ($id <= 0) {
+                http_response_code(400);
+                echo json_encode(['mensagem' => 'ID inválido']);
+                exit();
+            }
+            $rows = $categoriaDao->remover($id, $userId);
+            if ($rows === 0) {
+                http_response_code(404);
+                echo json_encode(['mensagem' => 'Categoria não encontrada']);
+                exit();
+            }
+            http_response_code(204);
         } else {
             http_response_code(405);
             echo json_encode(['mensagem' => 'Método não suportado']);

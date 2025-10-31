@@ -56,7 +56,14 @@ function isActive($files)
                         <span>Nova Anotação</span>
                     </a>
                 </li>
-                
+                <!-- novo: categorias -->
+                <li class="nav-item">
+                    <a class="nav-link <?php echo isActive(['categorias.php', 'Categorias.php']); ?>"
+                        href="Categorias.php">
+                        <i class="bi bi-tags me-1"></i>
+                        <span>Categorias</span>
+                    </a>
+                </li>
             </ul>
 
             <!-- Usuário (dropdown) -->
@@ -94,11 +101,14 @@ function isActive($files)
                                 <i class="bi bi-plus-square me-2"></i>Nova Anotação
                             </a>
                         </li>
+                        <!-- novo: categorias -->
                         <li>
-                            <a class="dropdown-item" href="Anotacao.php#categorias">
+                            <a class="dropdown-item <?php echo isActive(['categorias.php', 'Categorias.php']); ?>"
+                                href="Categorias.php">
                                 <i class="bi bi-tags me-2"></i>Categorias
                             </a>
                         </li>
+
                         <li>
                             <hr class="dropdown-divider">
                         </li>

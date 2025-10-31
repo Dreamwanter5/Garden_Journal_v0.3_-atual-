@@ -9,49 +9,82 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <!-- Fim import Bootstrap -->
-    
+    <!-- Compensar navbar fixa -->
+    <style>
+      /* Evita que o conteúdo fique escondido sob a navbar fixed-top */
+      body { padding-top: 72px; }
+      @media (max-width: 991.98px) { body { padding-top: 66px; } }
+    </style>
 </head>
 
 <body>
     <!-- Começo NavBar -->
     <header>
-        <nav class="navbar navbar-expand-lg bg-dark fixed-top border-body"  id="corponavbar">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top border-bottom" id="corponavbar">
             <div class="container">
-                <a class="navbar-brand fs-4 d-flex align-items-center" href="#">
-                    <img src="../img/pixelart plant.gif" alt="Logo Garden Journal" id="logoGJ" loading="lazy">
-                    <i>GARDEN<br>JOURNAL</i>
+                <a class="navbar-brand fs-4 d-flex align-items-center" href="home.html">
+                    <img src="../img/pixelart plant.gif" alt="Logo Garden Journal" id="logoGJ" loading="lazy" height="32">
+                    <i class="ms-1">GARDEN<br>JOURNAL</i>
                 </a>
-                <button class="navbar-toggler shadow-none border-10" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+
+                <!-- Toggler -->
+                <button class="navbar-toggler shadow-none border-0" type="button"
+                        data-bs-toggle="offcanvas" data-bs-target="#mainOffcanvas"
+                        aria-controls="mainOffcanvas" aria-label="Alternar navegação">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="offcanvas offcanvas-start" tabindex="1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
-                    <div class="offcanvas-header text-white border-bottom">
-                        <h5 class="offcanvas-title" id="offcanvasNavbarLabel">GARDEN JOURNAL</h5>
-                        <button type="button" class="btn-close btn-close-white shadow-none" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-                    </div>
-                    <div class="offcanvas-body d-flex flex-column flex-lg-row p-4 p-lg-0">
-                        <ul class="navbar-nav justify-content-center fs-5 flex-grow-1 pe-3">
-                            <li class="nav-item mx-2">
-                                <a class="nav-link active" aria-current="page" href="#">Página Inicial</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#Sobre o Produto">Sobre o Produto</a>
-                            </li>
-                            
-                            <li class="nav-item">
-                                <a class="nav-link" href="#Adquira o Programa">Adquira o Programa</a>
-                            </li>
-                        </ul>
-                        <div class="d-flex flex-column flex-lg-row justify-content-center align-items-center gap-3">
-                            <a href="login.html" class="text-black text-decoration-none">Login</a>
-                            <a href="cadastro.html" id="HeaderBtn">Cadastro</a>
-                        </div>
+
+                <!-- Menu normal (lg+) -->
+                <div class="collapse navbar-collapse d-none d-lg-flex">
+                    <ul class="navbar-nav justify-content-center fs-5 flex-grow-1 pe-3">
+                        <li class="nav-item mx-2">
+                            <a class="nav-link active" aria-current="page" href="home.html">Página Inicial</a>
+                        </li>
+                        <li class="nav-item mx-2">
+                            <a class="nav-link" href="#sobre-produto">Sobre o Produto</a>
+                        </li>
+                        <li class="nav-item mx-2">
+                            <a class="nav-link" href="#adquirir">Adquira o Programa</a>
+                        </li>
+                    </ul>
+                    <div class="d-flex align-items-center gap-3">
+                        <a href="login.html" class="text-dark text-decoration-none">Login</a>
+                        <a href="cadastro.html" id="HeaderBtn">Cadastro</a>
                     </div>
                 </div>
             </div>
         </nav>
     </header>
     <!-- Fim NavBar -->
+
+    <!-- Offcanvas (menu mobile) FORA da navbar -->
+    <div class="offcanvas offcanvas-start text-bg-dark" tabindex="-1"
+         id="mainOffcanvas" aria-labelledby="mainOffcanvasLabel"
+         data-bs-scroll="true" data-bs-backdrop="true">
+        <div class="offcanvas-header border-bottom">
+            <h5 class="offcanvas-title" id="mainOffcanvasLabel">GARDEN JOURNAL</h5>
+            <button type="button" class="btn-close btn-close-white shadow-none"
+                    data-bs-dismiss="offcanvas" aria-label="Fechar"></button>
+        </div>
+        <div class="offcanvas-body d-flex flex-column p-4">
+            <ul class="navbar-nav fs-5">
+                <li class="nav-item mb-2">
+                    <a class="nav-link active" aria-current="page" href="home.html" data-bs-dismiss="offcanvas">Página Inicial</a>
+                </li>
+                <li class="nav-item mb-2">
+                    <a class="nav-link" href="#sobre-produto" data-bs-dismiss="offcanvas">Sobre o Produto</a>
+                </li>
+                <li class="nav-item mb-2">
+                    <a class="nav-link" href="#adquirir" data-bs-dismiss="offcanvas">Adquira o Programa</a>
+                </li>
+            </ul>
+
+            <div class="mt-auto d-grid gap-2">
+                <a href="login.html" class="btn btn-outline-light" data-bs-dismiss="offcanvas">Login</a>
+                <a href="cadastro.html" class="btn btn-success">Cadastro</a>
+            </div>
+        </div>
+    </div>
 
     <!-- Começo pagina 1 -->
     <div class="pagina-1">
@@ -68,76 +101,79 @@
         </a>
     </div>
 
-<hr class="my-5 border-3 border-dark w-75 mx-auto">
+    <hr class="my-5 border-3 border-dark w-75 mx-auto">
 
-<!-- Fim Página 1 -->
-<!--Inicio Página 2  -->
-<div id="area_sobre">
-    <div class="container">
-        <div class="row">
-            <div class="col-12">
-                <h3 class="main-title text-center">Expanda suas Anotações!</h3>
-            </div>
-            <div class="d-flex flex-wrap justify-content-center gap-4 mt-4">
-                <div class="p-3 col-md-5" id="sobre">
-                    <h4>Crie Links</h4>
-                    <p>Conecte suas anotações, forme assim a sua própria enciclopédia dos mais variados assuntos.</p>
+    <!-- Fim Página 1 -->
+
+    <!--Inicio Página 2  -->
+    <div id="sobre-produto">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h3 class="main-title text-center">Expanda suas Anotações!</h3>
                 </div>
-                <div class=" p-3 col-md-5" id="sobre">
-                    <h4>Expanda suas anotações</h4>
-                    <p>Para as necessidades de seu usuário, o Garden Journal possui um tema escuro e um claro para refrescar seu visual.</p>
-                </div>
-                <div class=" p-3 col-md-5" id="sobre">
-                    <h4>Edição de Texto</h4>
-                    <p>Edite o texto como quiser, negrito, itálico, sublinhado e até mesmo grifado. </p>
-                </div>
-                <div class=" p-3 col-md-5" id="sobre">
-                    <h4>Dinamicidade</h4>
-                    <p>Com nossa aplicação o usuário desfrutará de uma agilidade muito maior em sua produtividade, graças ao sistema por trás e por seu sistema.</p>
+                <div class="d-flex flex-wrap justify-content-center gap-4 mt-4">
+                    <div class="p-3 col-md-5 sobre-card">
+                        <h4>Crie Links</h4>
+                        <p>Conecte suas anotações, forme assim a sua própria enciclopédia dos mais variados assuntos.</p>
+                    </div>
+                    <div class="p-3 col-md-5 sobre-card">
+                        <h4>Expanda suas anotações</h4>
+                        <p>Para as necessidades de seu usuário, o Garden Journal possui um tema escuro e um claro para refrescar seu visual.</p>
+                    </div>
+                    <div class="p-3 col-md-5 sobre-card">
+                        <h4>Edição de Texto</h4>
+                        <p>Edite o texto como quiser, negrito, itálico, sublinhado e até mesmo grifado.</p>
+                    </div>
+                    <div class="p-3 col-md-5 sobre-card">
+                        <h4>Dinamicidade</h4>
+                        <p>Com nossa aplicação o usuário desfrutará de uma agilidade muito maior em sua produtividade, graças ao sistema por trás e por seu sistema.</p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-<!-- Fim Página 2 -->
-<hr class="my-5 border-3 border-dark w-75 mx-auto">
-<!-- Inicio Página 3 -->
-<section class="container pt-2 pb-4" id="cultive-conhecimentos">
-    <div class="text-center mb-3">
-        <h2 class="fw-bold">Cultive seus Conhecimentos</h2>
-        <p class="lead mt-2">
-            O Garden Journal é mais do que apenas um bloco de notas enfeitado, personalize suas ideias e seja mais eficiente!
-        </p>
-    </div>
-    <div class="row align-items-center justify-content-center">
-        <!-- Imagem à esquerda -->
-        <div class="col-md-7 d-flex flex-column align-items-center mb-4 mb-md-0">
-            <img id="filter-image" src="../img/organizacao.jpg" alt="Organização" class="mb-2">
-            <div id="filter-desc" class="text-center" style="max-width: 400px;">
-                Com o Garden Journal você pode juntar  anotações de qualquer lugar e ainda mantê-las organizadas sem que se misturem com outras
+    <!-- Fim Página 2 -->
+
+    <hr class="my-5 border-3 border-dark w-75 mx-auto">
+
+    <!-- Inicio Página 3 -->
+    <section class="container pt-2 pb-4" id="cultive-conhecimentos">
+        <div class="text-center mb-3">
+            <h2 class="fw-bold">Cultive seus Conhecimentos</h2>
+            <p class="lead mt-2">
+                O Garden Journal é mais do que apenas um bloco de notas enfeitado, personalize suas ideias e seja mais eficiente!
+            </p>
+        </div>
+        <div class="row align-items-center justify-content-center">
+            <!-- Imagem à esquerda -->
+            <div class="col-md-7 d-flex flex-column align-items-center mb-4 mb-md-0">
+                <img id="filter-image" src="../img/organizacao.jpg" alt="Organização" class="mb-2">
+                <div id="filter-desc" class="text-center" style="max-width: 400px;">
+                    Com o Garden Journal você pode juntar  anotações de qualquer lugar e ainda mantê-las organizadas sem que se misturem com outras
+                </div>
+            </div>
+            <!-- Botões à direita -->
+            <div class="col-md-5 d-flex flex-column align-items-center align-items-md-start gap-3">
+                <button class="filter-btn w-100" data-img="1">Organize Suas Anotações</button>
+                <button class="filter-btn w-100" data-img="2">Torne o Garden Journal <b>SEU</b> espaço</button>
+                <button class="filter-btn w-100" data-img="3">Incremente e acumule informações</button>
             </div>
         </div>
-        <!-- Botões à direita -->
-        <div class="col-md-5 d-flex flex-column align-items-center align-items-md-start gap-3">
-            <button class="filter-btn w-100" data-img="1">Organize Suas Anotações</button>
-            <button class="filter-btn w-100" data-img="2">Torne o Garden Journal <b>SEU</b> espaço</button>
-            <button class="filter-btn w-100" data-img="3">Incremente e acumule informações</button>
-        </div>
+    </section>
+    <!-- Fim Página 3 -->
+
+    <hr class="my-5 border-3 border-dark w-75 mx-auto">
+
+    <!-- Começo página 4 -->
+    <div class="container my-5" id="adquirir">
+        <h2 class="text-center text-black">Comece sua jornada agora</h2>
+        <p class="text-center">Mude para sempre sua forma de se organizar</p>
     </div>
-</section>
-<!-- Fim Página 3 -->
-<hr class="my-5 border-3 border-dark w-75 mx-auto">
-<!-- Começo página 4 -->
-<div class="container my-5">
-    <h2 class="text-center text-black">Comece sua jornada agora</h2>
-    <p class="text-center">Mude para sempre sua forma de se organizar</p>
-</div>
-     <a href="telaSelecao.html" style="text-decoration: none;">
-            <button type="button" class="btn-start d-flex justify-content-center" id="botao-final">Comece agora!</button>
+    <a href="telaSelecao.html" style="text-decoration: none;">
+        <button type="button" class="btn-start d-flex justify-content-center" id="botao-final">Comece agora!</button>
     </a>
 
-
-
-<script src="../js/homeScript.js"></script>
+    <script src="../js/homeScript.js"></script>
 </body>
 </html>

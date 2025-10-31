@@ -79,6 +79,25 @@ h1 {
 .editor-content {
   padding: 0;
   min-height: 400px;
+  overflow: hidden;
+  max-height: 1000px;       /* altura máxima “aberto” */
+  opacity: 1;
+  transition: max-height 500ms ease, opacity 500ms ease;
+}
+
+/* FIX: permitir recolher de verdade */
+.editor-collapsed .editor-content {
+  max-height: 0;
+  opacity: 0;
+  min-height: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+}
+
+.editor-collapsed #editor {
+  min-height: 0 !important;
+  padding: 0 !important;
+  border-top: 0 !important;
 }
 
 #editor {
@@ -353,6 +372,59 @@ footer a:hover {
   }
 }
 
-a {
-  list-style: none;
+/* Layout: empilhado (editor em cima, preview embaixo) */
+.editor-preview-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+}
+/* Transição suave ao recolher/expandir */
+.editor-content {
+  overflow: hidden;
+  max-height: 1000px;
+  opacity: 1;
+  transition: max-height 250ms ease, opacity 250ms ease;
+}
+
+/* FIX: permitir recolher de verdade */
+.editor-collapsed .editor-content {
+  max-height: 0;
+  opacity: 0;
+  min-height: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+}
+
+.editor-collapsed #editor {
+  min-height: 0 !important;
+  padding: 0 !important;
+  border-top: 0 !important;
+}
+
+/* Header do editor como barra de ações */
+.editor-header {
+     display: flex;
+     align-items: center;
+     justify-content: space-between;
+     gap: .75rem;
+}
+/* Força subtítulo branco no header */
+.editor-header small {
+  color: #fff !important;
+  opacity: .9;
+}
+
+/* Botão Adicionar: garantir texto branco */
+.categorias-wrapper .btn-success {
+  color: #fff !important;
+}
+/* Botão de recolher: manter texto branco e hover suave */
+.btn-toggle-editor {
+  color: #fff !important;
+  border-color: rgba(255,255,255,.5) !important;
+}
+.btn-toggle-editor:hover {
+  background: rgba(255,255,255,.15) !important;
+  color: #fff !important;
+  border-color: rgba(255,255,255,.65) !important;
 }

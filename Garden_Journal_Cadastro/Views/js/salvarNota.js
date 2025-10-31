@@ -6,12 +6,14 @@ const app = {
         conteudo: '',
         categoriasSelecionadas: []
     },
-
     // estado adicional exigido pelo template/métodos
     preview: '',
     mensagem: '',
     sucesso: false,
     errors: { titulo: '', descricao: '', conteudo: '' },
+
+    // controle de UI
+    editorColapsado: false,
 
     categoriasDisponiveis: [],
     novaCategoriaNome: '',
@@ -24,6 +26,10 @@ const app = {
         const titulo = urlParams.get('titulo');
         console.log('[Anotacao] mounted, titulo param =', titulo);
 
+        // restaura preferência
+        const persisted = localStorage.getItem('gj_editor_collapsed');
+        if (persisted === '1') this.editorColapsado = true;
+
         // 1) carregar categorias do usuário
         await this.carregarCategorias();
 
@@ -31,6 +37,11 @@ const app = {
         if (titulo) {
             await this.carregarNota(titulo);
         }
+    },
+
+    toggleEditor() {
+        this.editorColapsado = !this.editorColapsado;
+        localStorage.setItem('gj_editor_collapsed', this.editorColapsado ? '1' : '0');
     },
 
     async carregarCategorias() {
@@ -125,13 +136,9 @@ const app = {
     },
 
     validarConteudo() {
-        if (this.formData.conteudo.trim() === "") {
-            this.errors.conteudo = "A anotação não pode estar vazia";
-            return false;
-        } else {
-            this.errors.conteudo = "";
-            return true;
-        }
+        // Conteúdo agora é opcional
+        this.errors.conteudo = "";
+        return true;
     },
 
     // Método para coletar dados do formulário (alternativa)
@@ -249,14 +256,12 @@ Visite o [Markdown Guide](https://www.markdownguide.org) para aprender mais.
 
     // Método principal de salvamento
     async salvarNota() {
-        // Validações
+        // Valida apenas o título (conteúdo é opcional)
         const tituloValido = this.validarTitulo();
-        const conteudoValido = this.validarConteudo();
-
-        if (!tituloValido || !conteudoValido) {
-            this.mostrarMensagem('Por favor, corrija os erros antes de salvar.', false);
-            return;
-        }
+        if (!tituloValido) {
+             this.mostrarMensagem('Por favor, corrija os erros antes de salvar.', false);
+             return;
+         }
 
         try {
             const url = '/Programacao_web/Garden_Journal_v0.3_(atual)/Controllers/AnotacaoController.php?acao=salvar';

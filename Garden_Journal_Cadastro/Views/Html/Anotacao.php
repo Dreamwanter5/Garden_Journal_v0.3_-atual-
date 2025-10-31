@@ -65,7 +65,7 @@ if (!isset($_SESSION["id"])) {
                     <div class="mt-3 d-flex gap-2">
                         <input type="text" class="form-control" placeholder="Nova categoria..."
                             v-model="novaCategoriaNome" @keyup.enter="adicionarCategoria" />
-                        <button type="button" class="btn btn-outline-success" @click="adicionarCategoria"
+                        <button type="button" class="btn btn-success" @click="adicionarCategoria"
                             :disabled="criandoCategoria">
                             {{ criandoCategoria ? 'Criando...' : 'Adicionar' }}
                         </button>
@@ -75,11 +75,18 @@ if (!isset($_SESSION["id"])) {
             </div>
 
             <!-- Área do Editor e Preview -->
-            <div class="editor-preview-container">
+            <div class="editor-preview-container" :class="{'editor-collapsed': editorColapsado}">
                 <div class="editor-wrapper">
-                    <div class="editor-header">
-                        <h2>Editor</h2>
-                        <span>Digite seu Markdown aqui</span>
+                    <div class="editor-header d-flex align-items-center justify-content-between">
+                        <div>
+                            <h2 class="m-0">Editor</h2>
+                            <small class="text-white">Digite seu Markdown aqui</small>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-outline-light btn-toggle-editor"
+                            @click="toggleEditor" :aria-expanded="!editorColapsado">
+                            <i :class="editorColapsado ? 'bi bi-arrows-expand' : 'bi bi-arrows-collapse'"></i>
+                            {{ editorColapsado ? 'Mostrar Editor' : 'Recolher Editor' }}
+                        </button>
                     </div>
                     <div class="editor-content">
                         <textarea name="conteudo" id="editor" placeholder="# Comece a escrever seu Markdown aqui..."

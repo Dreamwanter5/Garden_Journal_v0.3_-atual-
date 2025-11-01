@@ -1,211 +1,126 @@
 body{
-    background: url(../img/Background\ página\ home\ tcc\ v2.jpg
-    ) no-repeat center center fixed;
+    background: url(../img/Background\ página\ home\ tcc\ v2.jpg) no-repeat center center fixed;
+    background-size: cover;
     font-family: Arial, sans-serif;
 }
-.pagina-1 {
-    padding-bottom: 80px;
-}
-
-#botao-final {
-    margin-bottom: 10% !important; 
-}
+.pagina-1 { padding-bottom: 48px; }
+#botao-final { margin-bottom: 10% !important; }
 
 #corponavbar{
     background-color: rgba(250, 250, 250, 0.90) !important;
     backdrop-filter: blur(10px) !important;
 }
 
-section{
-    padding-top: 20%;
-}
+main { padding-top: 3rem; display: flex; flex-direction: column; align-items: center; text-align: center; }
+.content-section { padding-top: 0; }
 
-button{
-    margin: 0.2em;
-    margin-left: 15px !important;
-}
-
-#logoGJ{
-    margin-right: 15px;
-}
+button{ margin: 0.2em; }
+#logoGJ{ margin-right: 15px; height: 32px; }
 
 .btn-start{
-    
     margin: auto !important;
     background-color: #65A603;
     border-radius: 12px;
-    transition-duration: 0.4s;
+    transition: 0.3s;
     color: white;
     border: 2px solid #65A603 ;
     text-align: center;
-    /* display: inline-block; */
     padding: 15px 32px;
     font-size: 2rem;
 }
-
 .btn-start:hover{
     background-color: white;
-    color: black;
+    color: #65A603;
     border: 2px solid #65A603;
-    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
-    font-size: 2rem;
-    padding: 15px 32px;
+    box-shadow: 0 12px 16px rgba(0,0,0,0.24), 0 17px 50px rgba(0,0,0,0.19);
 }
-
-
-#headerBody{
-    position: sticky;
-    top: 0;
-    padding: 10px 16px;
-    background: #555;
-    color: #f1f1f1;
-}
-
-#headerBody
-.main-title {
-    color: #444;
-    margin: 0 0 65px 0;
-    font-size: 40px;
-    text-align: center;
-  }
 
 #HeaderBtn{
-    position: sticky;
     padding: 12px 25px!important;
     background-color: #65A603;
-    transition-duration: 0.4s;
+    transition-duration: 0.2s;
     border-radius: 12px;
     color: white;
     text-decoration: none;
 }
-#HeaderBtn:hover{
-    background-color: #4d7e02 !important;
+#HeaderBtn:hover{ background-color: #4d7e02 !important; }
+
+.main-heading { font-size: clamp(2rem, 8vw, 5rem); }
+h1 { margin: 0.2em; }
+
+@media(max-width: 911px){
+    .sidebar{ background-color: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); }
 }
 
-.main-heading {
-    font-size: 2em;
-}
+#sobre { font-size: 1.5rem; background-color: rgba(156, 156, 156, 0.23); backdrop-filter: blur(10px); padding: 20px; border-radius: 10px; margin: 20px !important; max-width: 800px; }
 
-h1 {
-    font-size: 10vw;
-    margin: 0.2em;
-    margin-left: 15px
-}
+header .navbar { z-index: 1030; }
 
-@media(max-width:911px){
-    .sidebar{
-        background-color: rgba(255, 255, 255, 0.15);
-        backdrop-filter: blur(10px);
-    }
-}
+a { text-decoration: none; }
+a:hover { text-decoration: underline; }
 
-
-/* Centralize the main section */
-main {
-    padding-top: 10px; /* Adjust this value to match the height of your header */
-    display: flex;
-    flex-direction: column;
-    justify-content: center; /* Center vertically */
-    align-items: center; /* Center horizontally */
-    text-align: center; /* Center text alignment */
-}
-
-#sobre {
-    font-size: 1.5rem;
-    background-color: rgba(156, 156, 156, 0.23);
-    backdrop-filter: blur(10px);
-    padding: 20px;
-    border-radius: 10px;
-    margin: 20px !important;
-    max-width: 800px; /* Optional: Set a maximum width for larger screens */
-
-}
-
-/* Optional: Add styles for the header to ensure it remains fixed and styled properly */
-header .navbar {
-    z-index: 1030; /* Ensure the header stays above other content */
-}
-
-/* Remove underline from all <a> tags */
-a {
-    text-decoration: none;
-}
-
-/* Optional: Add hover effect for links */
-a:hover {
-    text-decoration: underline; /* Add underline on hover if desired */
-}
-
+/* Imagem e descrição responsivas */
 #filter-image {
-    width: 640px !important;
-    height: 420px !important;
-    object-fit:contain;
+    width: 100%;
+    height: auto;
+    max-width: 640px;
+    object-fit: contain;
     border: 3px solid #ccc;
     border-radius: 10px;
-    max-width: none !important;
     display: block;
 }
-
-/* Custom style for pagina 3 filter buttons */
-.filter-btn {
-    background-color: #65A603;
-    color: #fff ;
-    border: 2px solid #65A603 ;
-    border-radius: 50px ;      
-    font-size: 1.2rem;          
-    /* font-weight: 600; */
-    padding: 28px 0; 
-    margin-bottom: 18px;
-    transition: 
-        background 0.3s,
-        color 0.3s,
-        border-color 0.3s,
-        box-shadow 0.3s;
-    width: 100%;
-    box-shadow: 0 2px 8px 0 rgba(101,166,3,0.08);
-}
-
-.filter-btn:hover, .filter-btn.active {
-    background-color: #fff !important;
-    color: #65A603 !important;
-    border: 2px solid #65A603 !important;
-    box-shadow: 0 4px 16px 0 rgba(101,166,3,0.15);
-}
-
 #filter-desc {
-    background: rgba(0, 0, 0, 0.65); /* Preto mais opaco */
+    background: rgba(0, 0, 0, 0.65);
     color: #fff;
     border-radius: 16px;
     padding: 20px 28px;
     margin-top: 16px;
-    font-size: 1.18rem;
-    box-shadow: 0 4px 24px 0 rgba(0,0,0,0.18);
-    backdrop-filter: blur(6px); /* Blur mais visível */
+    font-size: 1.05rem;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+    backdrop-filter: blur(6px);
     max-width: 480px;
     text-align: center;
-    display: inline-block; /* Garante que o fundo só ocupe o texto */
+    display: inline-block;
 }
 
-/* Deixe a seção da página 4 mais destacada e ocupando boa parte da tela */
+/* Botões (página 3) */
+.filter-btn {
+    background-color: #65A603;
+    color: #fff;
+    border: 2px solid #65A603;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    padding: 18px 0;
+    margin-bottom: 14px;
+    transition: background 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s;
+    width: 100%;
+    box-shadow: 0 2px 8px rgba(101,166,3,0.08);
+}
+.filter-btn:hover, .filter-btn.active {
+    background-color: #fff !important;
+    color: #65A603 !important;
+    border: 2px solid #65A603 !important;
+    box-shadow: 0 4px 16px rgba(101,166,3,0.15);
+}
+
+/* Seção final destacada */
 .container.my-5 {
     min-height: 45vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding-top: 3rem;
-    padding-bottom: 3rem;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    padding-top: 3rem; padding-bottom: 3rem;
+}
+.container.my-5 h2 { font-size: clamp(1.6rem, 4vw, 2.2rem); margin-bottom: 0.75rem; }
+.container.my-5 p  { font-size: clamp(1rem, 2.2vw, 1.4rem); margin-bottom: 0.5rem; }
+
+/* Offcanvas: altura e rolagem em mobile */
+.offcanvas { height: 100dvh; }
+.offcanvas-body { overflow-y: auto; }
+
+.pagina-1 .content-section .main-heading {
+  margin-bottom: 1.25rem; /* distancia o H1 principal */
 }
 
-.container.my-5 h2,
-.container.my-5 p {
-    font-size: 2.2rem;
-    margin-bottom: 1.5rem;
-}
-
-.btn-start {
-    font-size: 2.2rem;
-    padding: 22px 48px;
-    margin-top: 2rem !important;
+.pagina-1 .btn-start {
+  margin-top: 3rem !important; /* afasta o botão do título/section */
 }
 

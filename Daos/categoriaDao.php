@@ -79,7 +79,6 @@ class CategoriaDAO extends BaseDAO
         return $stmt->rowCount();
     }
 
-    // novo: remover (pivot é ON DELETE CASCADE)
     public function remover($idCategoria, $idUsuario)
     {
         $sql = "DELETE FROM categoria

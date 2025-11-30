@@ -14,7 +14,6 @@ if (!isset($_SESSION["id"])) {
 
 $dados = json_decode(file_get_contents('php://input'), true);
 
-// Validação mínima
 if (empty($dados['titulo'])) {
     $dados['titulo'] = 'Anotação sem título ' . date('d/m/Y H:i');
 }

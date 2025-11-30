@@ -139,4 +139,33 @@ class NotaDAO extends BaseDAO
 
         return $resultado;
     }
+
+    public function deletar(string $titulo, int $idUsuario): int
+    {
+        try {
+            $this->connection->beginTransaction();
+
+            // Remove vínculos (caso não haja ON DELETE CASCADE)
+            $this->executaComParametros(
+                "DELETE FROM nota_categoria WHERE id_nota = :titulo",
+                [':titulo' => $titulo]
+            );
+
+            // Remove a nota
+            $stmt = $this->executaComParametros(
+                "DELETE FROM nota WHERE nome = :titulo AND id_usuario = :id_usuario",
+                [
+                    ':titulo' => $titulo,
+                    ':id_usuario' => $idUsuario
+                ]
+            );
+
+            $this->connection->commit();
+            return $stmt->rowCount();
+        } catch (Exception $e) {
+            $this->connection->rollBack();
+            error_log("[NotaDAO::deletar] Erro: " . $e->getMessage());
+            throw $e;
+        }
+    }
 }

@@ -134,6 +134,40 @@ if ($acao === 'categorias') {
     exit();
 }
 
+if ($acao === 'excluir') {
+    try {
+        if ($_SERVER['REQUEST_METHOD'] !== 'DELETE') {
+            http_response_code(405);
+            echo json_encode(['mensagem' => 'Método não suportado (use DELETE)']);
+            exit();
+        }
+
+        $titulo = $_GET['titulo'] ?? '';
+        $titulo = trim($titulo);
+
+        if ($titulo === '') {
+            http_response_code(400);
+            echo json_encode(['mensagem' => 'Título não informado']);
+            exit();
+        }
+
+        $notaDao = new NotaDAO();
+        $apagadas = $notaDao->deletar($titulo, (int) $_SESSION['id']);
+
+        if ($apagadas === 0) {
+            http_response_code(404);
+            echo json_encode(['mensagem' => 'Anotação não encontrada']);
+        } else {
+            echo json_encode(['mensagem' => 'Anotação excluída com sucesso']);
+        }
+    } catch (Exception $e) {
+        error_log('[AnotacaoController::excluir] ' . $e->getMessage());
+        http_response_code(500);
+        echo json_encode(['mensagem' => 'Erro ao excluir anotação', 'erro' => $e->getMessage()]);
+    }
+    exit();
+}
+
 if ($acao !== 'salvar') {
     http_response_code(400);
     echo json_encode(['mensagem' => 'Ação inválida']);

@@ -98,6 +98,9 @@ if (!isset($_SESSION["id"])) {
                                     class="btn btn-sm btn-outline-secondary">
                                     <i class="bi bi-pencil"></i> Editar
                                 </a>
+                                <button class="btn btn-sm btn-outline-danger" @click="excluir(nota)">
+                                    <i class="bi bi-trash"></i> Excluir
+                                </button>
                             </div>
                         </div>
                     </div>

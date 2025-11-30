@@ -84,6 +84,25 @@ const notesApp = {
     modal.show();
   },
 
+  excluir(nota) {
+    if (!confirm(`Excluir a anotação "${nota.titulo}"? Esta ação não pode ser desfeita.`)) return;
+    const url = `/Programacao_web/Garden_Journal_v0.3_(atual)/Controllers/AnotacaoController.php?acao=excluir&titulo=${encodeURIComponent(nota.titulo)}`;
+    fetch(url, { method: 'DELETE', credentials: 'same-origin' })
+      .then(async resp => {
+        const data = await resp.json().catch(()=>({}));
+        if (resp.ok) {
+          this.notas = this.notas.filter(n => n.titulo !== nota.titulo);
+          console.log('[notesApp] anotação excluída');
+        } else {
+          alert(data.mensagem || 'Falha ao excluir');
+        }
+      })
+      .catch(e => {
+        console.error('Erro ao excluir:', e);
+        alert('Erro de conexão ao excluir');
+      });
+  },
+
   categoriesList(nota) {
     if (!nota) return [];
     // notas.listar retorna nomes concatenados

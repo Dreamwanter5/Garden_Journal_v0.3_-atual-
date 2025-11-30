@@ -358,6 +358,25 @@ Visite o [Markdown Guide](https://www.markdownguide.org) para aprender mais.
         setTimeout(() => {
             this.mensagem = '';
         }, 5000);
+    },
+
+    async excluirNota() {
+        const titulo = this.formData.tituloOriginal || this.formData.titulo;
+        if (!titulo) return;
+        if (!confirm(`Excluir a anotação "${titulo}"?`)) return;
+        try {
+            const url = `/Programacao_web/Garden_Journal_v0.3_(atual)/Controllers/AnotacaoController.php?acao=excluir&titulo=${encodeURIComponent(titulo)}`;
+            const resp = await fetch(url, { method: 'DELETE', credentials: 'same-origin' });
+            const data = await resp.json().catch(()=>({}));
+            if (resp.ok) {
+                this.mostrarMensagem('Anotação excluída', true);
+                setTimeout(()=>window.location.href='minhas_anotacoes.php', 700);
+            } else {
+                this.mostrarMensagem(data.mensagem || 'Falha ao excluir', false);
+            }
+        } catch (e) {
+            this.mostrarMensagem('Erro de conexão ao excluir', false);
+        }
     }
 }
 

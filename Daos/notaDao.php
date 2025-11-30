@@ -36,7 +36,6 @@ class NotaDAO extends BaseDAO
                 ]);
 
                 if ($stmt->rowCount() === 0) {
-                    // Se não encontrou a nota antiga, faz upsert pelo novo título
                     $sqlInsert = "INSERT INTO nota (nome, descricao, texto, dt, id_usuario)
                                   VALUES (:titulo, :descricao, :conteudo, CURDATE(), :id_usuario)
                                   ON DUPLICATE KEY UPDATE
